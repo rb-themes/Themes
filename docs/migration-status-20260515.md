@@ -218,6 +218,14 @@ All templates below were imported as drafts and had original Elementor display c
 - Production menu targets were checked directly and all resolve with 200 final responses: `/`, `/about/`, `/members/`, the three member filter URLs, `/news/`, `/membership/apply/`, `/membership-policy/`, and `/contact/`.
 - Desktop overflow checks passed for the compared production pages. Browser viewport emulation is still not reliable for true mobile QA in this session: after requesting a 390px viewport, both staging and production still reported `window.innerWidth=1371`, so real mobile-device QA remains required.
 
+## Strict Design Kit Parity Pass
+
+- A stricter computed-style audit found production was still using the old Elementor Kit 4 values (`#2E76FF` primary color and old font faces), while staging uses Elementor Kit 6 with black primary/text colors, `Roboto Flex variable`, `Venture13`, and the organic button hover mask.
+- `cygma-migration-tools` was updated to version 0.2.3 with an admin-only `sync-design-kit` REST action. The action downloads the exact staging font and hover assets into production uploads and reapplies staging Kit colors, typography, container widths, overflow guard, and button hover CSS to active production Kit 4.
+- Production synced assets now exist under `/wp-content/uploads/2026/05/`: `RobotoFlex-VariableFont_GRADXOPQXTRAYOPQYTASYTDEYTFIYTLCYTUCopszslntwdthwght.ttf`, `Venture13Regular.woff2`, `Venture13Bold.woff2`, `Venture13Thin.woff2`, and `hover-button-1-scaled.png`.
+- The design Kit sync and HFE shell sync were run successfully on production. Migration switches remained `maintenance=false`, `redirects=true`, `news_routing=true`, and `member_routing=true`.
+- Final computed-style checks on `/`, `/about/`, `/members/`, `/membership/apply/`, and `/news/` confirmed the production body font is `Roboto Flex variable`, header and hero title colors are black, hero H1 stretch is `40%`, the header CTA is `202x37` with `font-weight:750` and `font-stretch:150%`, the hover mask animates from the production asset, the new footer remains active, there are no broken images, no staging-domain references, and no desktop overflow.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.

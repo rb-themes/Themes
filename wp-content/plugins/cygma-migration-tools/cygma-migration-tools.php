@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.2
+ * Version: 0.2.3
  * Author: CYGMA
  */
 
@@ -108,6 +108,14 @@ add_action('rest_api_init', function () {
         },
         'callback' => 'cygma_migration_tools_sync_hfe_shells',
     ));
+
+    register_rest_route('cygma-migration-tools/v1', '/sync-design-kit', array(
+        'methods' => 'POST',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        },
+        'callback' => 'cygma_migration_tools_sync_design_kit',
+    ));
 });
 
 function cygma_migration_tools_sync_hfe_shells() {
@@ -153,6 +161,211 @@ function cygma_migration_tools_sync_hfe_shells() {
 
     return rest_ensure_response(array(
         'updated' => $results,
+    ));
+}
+
+function cygma_migration_tools_sync_design_asset($source_url, $filename) {
+    $uploads = wp_upload_dir();
+    $target_dir = trailingslashit($uploads['basedir']) . '2026/05';
+    $target_url = trailingslashit($uploads['baseurl']) . '2026/05/' . $filename;
+    $target_file = trailingslashit($target_dir) . $filename;
+
+    if (!wp_mkdir_p($target_dir)) {
+        return new WP_Error('cygma_asset_directory_failed', 'Could not create target uploads directory.');
+    }
+
+    if (!file_exists($target_file)) {
+        $response = wp_remote_get($source_url, array('timeout' => 30));
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        $body = wp_remote_retrieve_body($response);
+
+        if ($code < 200 || $code >= 300 || $body === '') {
+            return new WP_Error('cygma_asset_download_failed', 'Could not download staging design asset.', array('source' => $source_url, 'status' => $code));
+        }
+
+        file_put_contents($target_file, $body);
+    }
+
+    return array(
+        'file' => $target_file,
+        'url' => $target_url,
+        'exists' => file_exists($target_file),
+        'bytes' => file_exists($target_file) ? filesize($target_file) : 0,
+    );
+}
+
+function cygma_migration_tools_design_custom_css($assets) {
+    $roboto_url = esc_url_raw($assets['roboto']['url']);
+    $venture_regular_url = esc_url_raw($assets['venture_regular']['url']);
+    $venture_bold_url = esc_url_raw($assets['venture_bold']['url']);
+    $venture_thin_url = esc_url_raw($assets['venture_thin']['url']);
+    $hover_mask_url = esc_url_raw($assets['hover_mask']['url']);
+
+    return <<<CSS
+@font-face { font-family: "Roboto Flex variable"; font-display: auto; src: url("{$roboto_url}") format("truetype"); font-weight: 100 1000; font-stretch: 25% 151%; }
+@font-face { font-family: "Roboto Flex custom"; font-display: auto; src: url("{$roboto_url}") format("truetype"); font-weight: 100 1000; font-stretch: 25% 151%; }
+@font-face { font-family: Venture13; font-style: normal; font-weight: normal; font-display: auto; src: url("{$venture_regular_url}") format("woff2"); }
+@font-face { font-family: Venture13; font-style: normal; font-weight: bold; font-display: auto; src: url("{$venture_bold_url}") format("woff2"); }
+@font-face { font-family: Venture13; font-style: normal; font-weight: 200; font-display: auto; src: url("{$venture_thin_url}") format("woff2"); }
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.organic-fill-button {
+    background: #FFED62;
+    border: 3px solid #ffffff !important;
+    border-radius: 3px !important;
+    transition: 0.5s;
+    z-index: 1;
+}
+
+.organic-fill-button .elementor-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #FFBF00 0%, #FF8D0B 100%) !important;
+    -webkit-mask-image: url("{$hover_mask_url}");
+    mask-image: url("{$hover_mask_url}");
+    -webkit-mask-size: 2300% 100%;
+    mask-size: 2300% 100%;
+    -webkit-animation: mask-out 0.5s steps(22) forwards;
+    animation: mask-out 0.5s steps(22) forwards;
+    z-index: -1;
+}
+
+.organic-fill-button:hover .elementor-button::before {
+    -webkit-animation: mask-in 0.7s steps(22) forwards;
+    animation: mask-in 0.7s steps(22) forwards;
+}
+
+.organic-fill-button .elementor-button {
+    background: transparent !important;
+    z-index: 2;
+}
+
+.elementor-188 .elementor-element.elementor-element-62cafaf .elementor-button,
+.elementor-188 .elementor-element.elementor-element-62cafaf .elementor-button * {
+    font-weight: 750 !important;
+    font-stretch: 150% !important;
+}
+
+.elementor-188 .elementor-element.elementor-element-62cafaf {
+    width: 208px !important;
+    height: 43px !important;
+}
+
+.elementor-188 .elementor-element.elementor-element-62cafaf .elementor-button {
+    width: 202px !important;
+    height: 37px !important;
+    min-height: 37px !important;
+}
+
+h1.elementor-heading-title {
+    font-stretch: 40% !important;
+}
+
+@keyframes mask-in {
+  from { -webkit-mask-position: 0 center; mask-position: 0 center; }
+  to { -webkit-mask-position: 100% center; mask-position: 100% center; }
+}
+
+@keyframes mask-out {
+  from { -webkit-mask-position: 100% center; mask-position: 100% center; }
+  to { -webkit-mask-position: 0 center; mask-position: 0 center; }
+}
+
+.post-tags,
+.tag-links {
+    display: none !important;
+}
+CSS;
+}
+
+function cygma_migration_tools_design_kit_settings($assets) {
+    return array(
+        'system_colors' => array(
+            array('_id' => 'primary', 'title' => 'Primary', 'color' => '#000000'),
+            array('_id' => 'secondary', 'title' => 'Secondary', 'color' => '#2E76FF'),
+            array('_id' => 'text', 'title' => 'Text', 'color' => '#000000'),
+            array('_id' => 'accent', 'title' => 'Accent', 'color' => '#FF9D0B'),
+        ),
+        'custom_colors' => array(
+            array('_id' => '8638455', 'title' => 'light blue', 'color' => '#83E0EF'),
+            array('_id' => 'fbe895b', 'title' => 'Background grey', 'color' => '#F2ECE7'),
+            array('_id' => '4d9c829', 'title' => 'Background white', 'color' => '#FFFFFF'),
+        ),
+        'typography_enable_styleguide_preview' => 'yes',
+        'system_typography' => array(
+            array('_id' => 'primary', 'title' => 'Primary', 'typography_typography' => 'custom', 'typography_font_family' => 'Roboto Flex custom', 'typography_font_weight' => '900'),
+            array('_id' => 'secondary', 'title' => 'Secondary', 'typography_font_family' => 'Roboto Flex variable', 'typography_font_weight' => '500', 'typography_font_size' => array('unit' => 'px', 'size' => 34, 'sizes' => array()), 'typography_weight' => array('unit' => 'px', 'size' => 700, 'sizes' => array()), 'typography_width' => array('unit' => 'px', 'size' => 25, 'sizes' => array()), 'typography_line_height' => array('unit' => 'custom', 'size' => '85%', 'sizes' => array())),
+            array('_id' => 'text', 'title' => 'Text', 'typography_typography' => 'custom', 'typography_font_family' => 'Roboto Flex variable', 'typography_font_weight' => '500', 'typography_font_size' => array('unit' => 'px', 'size' => 16, 'sizes' => array()), 'typography_weight' => array('unit' => 'px', 'size' => 500, 'sizes' => array()), 'typography_width' => array('unit' => 'px', 'size' => 140, 'sizes' => array()), 'typography_line_height' => array('unit' => 'custom', 'size' => '130%', 'sizes' => array()), 'typography_font_size_tablet' => array('unit' => 'px', 'size' => 15, 'sizes' => array()), 'typography_weight_tablet' => array('unit' => 'px', 'size' => 500, 'sizes' => array()), 'typography_width_tablet' => array('unit' => 'px', 'size' => 140, 'sizes' => array()), 'typography_line_height_tablet' => array('unit' => 'custom', 'size' => '140%', 'sizes' => array())),
+            array('_id' => 'accent', 'title' => 'Accent', 'typography_typography' => 'custom', 'typography_font_family' => 'Roboto Flex custom'),
+        ),
+        'custom_typography' => array(),
+        'default_generic_fonts' => 'Sans-serif',
+        'site_name' => 'CYGMA',
+        'container_width' => array('unit' => 'px', 'size' => 1262, 'sizes' => array()),
+        'page_title_selector' => 'h1.entry-title',
+        'hello_footer_copyright_text' => 'All rights reserved',
+        'activeItemIndex' => 1,
+        'viewport_md' => 768,
+        'viewport_lg' => 1025,
+        'colors_enable_styleguide_preview' => 'yes',
+        'container_width_tablet' => array('unit' => 'px', 'size' => 580, 'sizes' => array()),
+        'container_width_mobile' => array('unit' => 'px', 'size' => 580, 'sizes' => array()),
+        'custom_css' => cygma_migration_tools_design_custom_css($assets),
+        'body_typography_typography' => 'custom',
+        'body_typography_font_family' => 'Roboto Flex variable',
+        'body_typography_font_size' => array('unit' => 'px', 'size' => 16, 'sizes' => array()),
+        'body_typography_weight' => array('unit' => 'px', 'size' => 500, 'sizes' => array()),
+        'body_typography_width' => array('unit' => 'px', 'size' => 140, 'sizes' => array()),
+        'body_typography_line_height' => array('unit' => 'custom', 'size' => '130%', 'sizes' => array()),
+        '__globals__' => array('link_normal_color' => ''),
+    );
+}
+
+function cygma_migration_tools_sync_design_kit() {
+    $asset_sources = array(
+        'roboto' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/RobotoFlex-VariableFont_GRADXOPQXTRAYOPQYTASYTDEYTFIYTLCYTUCopszslntwdthwght.ttf', 'filename' => 'RobotoFlex-VariableFont_GRADXOPQXTRAYOPQYTASYTDEYTFIYTLCYTUCopszslntwdthwght.ttf'),
+        'venture_regular' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Regular.woff2', 'filename' => 'Venture13Regular.woff2'),
+        'venture_bold' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Bold.woff2', 'filename' => 'Venture13Bold.woff2'),
+        'venture_thin' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Thin.woff2', 'filename' => 'Venture13Thin.woff2'),
+        'hover_mask' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/hover-button-1-scaled.png', 'filename' => 'hover-button-1-scaled.png'),
+    );
+    $assets = array();
+
+    foreach ($asset_sources as $key => $asset) {
+        $synced = cygma_migration_tools_sync_design_asset($asset['source'], $asset['filename']);
+
+        if (is_wp_error($synced)) {
+            return $synced;
+        }
+
+        $assets[$key] = $synced;
+    }
+
+    update_post_meta(4, '_elementor_page_settings', cygma_migration_tools_design_kit_settings($assets));
+    clean_post_cache(4);
+
+    if (did_action('elementor/loaded') && class_exists('Elementor\\Plugin')) {
+        Elementor\Plugin::instance()->files_manager->clear_cache();
+    }
+
+    return rest_ensure_response(array(
+        'kit' => 4,
+        'assets' => $assets,
+        'updated' => true,
     ));
 }
 
