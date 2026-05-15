@@ -68,7 +68,7 @@ function cygma_send_gone_response() {
     exit;
 }
 
-add_action('template_redirect', function () {
+function cygma_handle_redirect_map() {
     $path = cygma_current_request_path();
     $redirects = cygma_redirect_map();
 
@@ -86,4 +86,7 @@ add_action('template_redirect', function () {
         wp_safe_redirect(home_url($rule['target']), 301);
         exit;
     }
-}, -1000);
+}
+
+add_action('parse_request', 'cygma_handle_redirect_map', -1000);
+add_action('template_redirect', 'cygma_handle_redirect_map', -1000);

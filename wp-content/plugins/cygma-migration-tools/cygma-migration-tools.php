@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: CYGMA
  */
 
@@ -292,7 +292,7 @@ function cygma_migration_tools_send_gone_response() {
     exit;
 }
 
-add_action('template_redirect', function () {
+function cygma_migration_tools_handle_redirect_map() {
     if (!cygma_migration_tools_is_enabled('redirects')) {
         return;
     }
@@ -314,7 +314,10 @@ add_action('template_redirect', function () {
         wp_safe_redirect(home_url($rule['target']), 301);
         exit;
     }
-}, -1000);
+}
+
+add_action('parse_request', 'cygma_migration_tools_handle_redirect_map', -1000);
+add_action('template_redirect', 'cygma_migration_tools_handle_redirect_map', -1000);
 
 function cygma_migration_tools_news_base() {
     return 'news';

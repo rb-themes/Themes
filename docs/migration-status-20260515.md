@@ -163,7 +163,7 @@ All templates below were imported as drafts and had original Elementor display c
   - Redirect, news routing, and member routing switches are enabled; maintenance is disabled.
   - Elementor `Clear Files & Data` was run after template/routing activation.
   - Public route QA confirms 200 responses for `/`, `/about/`, `/members/`, `/membership/`, `/membership/apply/`, `/news/`, `/membership-policy/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, `/contact/`, `/members/gdcy/`, and `/news/cygma-registers-to-represent-the-game-development-industry-in-cyprus/`.
-  - Public redirect QA confirms `/about-us/`, `/become-a-member/`, `/membershippolicy/`, `/contacts/`, `/blog/`, `/blog-list/`, `/blog-grid/`, root-level news posts, and `/memberships/gdcy/` redirect to the expected new targets; `/how-to-apply/` still chains through `/become-a-member/` before reaching `/membership/apply/` due to an existing legacy redirect outside the custom map.
+  - Public redirect QA confirms `/about-us/`, `/become-a-member/`, `/membershippolicy/`, `/contacts/`, `/blog/`, `/blog-list/`, `/blog-grid/`, root-level news posts, and `/memberships/gdcy/` redirect to the expected new targets. `/how-to-apply/` initially chained through `/become-a-member/` due to Redirection plugin entry 1; this was cleaned up after the first monitoring pass.
   - `/cyprus/` returns 410 with noindex headers as planned.
   - Public content scans for key routes found no staging-domain, noindex, or maintenance markers.
   - A redirect-priority hardening patch was added to the custom redirect code and deployed to production with a rebuilt `deploy/cygma-migration-tools.zip`; the plugin switches remained `maintenance=false`, `redirects=true`, `news_routing=true`, and `member_routing=true` after deployment.
@@ -189,10 +189,17 @@ All templates below were imported as drafts and had original Elementor display c
 - Contact page still exposes a contact-form marker in public HTML.
 - Browser/MCP viewport resizing remained locked to a 1371px viewport, so true mobile layout QA still needs a real mobile device or a browser session with working viewport emulation.
 
+## Redirect Cleanup Pass
+
+- `cygma-migration-tools` was updated to version 0.2.1 so its redirect map also runs on `parse_request`, keeping the code-level map consistent with the desired direct `/how-to-apply/` target.
+- Production Redirection plugin entry 1 was updated from `/how-to-apply/` -> `https://cygma.eu/become-a-member/` to `/how-to-apply/` -> `https://cygma.eu/membership/apply/`.
+- Verification confirms `/how-to-apply/` now returns a single 301 directly to `https://cygma.eu/membership/apply/`, followed by a 200 final response.
+- Focused rechecks passed for `/become-a-member/`, `/about-us/`, `/membershippolicy/`, `/blog-grid/`, and `/memberships/gdcy/`, and target pages `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, and `/members/gdcy/` remain 200.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
-- `/how-to-apply/` reaches `/membership/apply/` through a two-step 301 chain (`/how-to-apply/` -> `/become-a-member/` -> `/membership/apply/`). This is non-critical but can be cleaned up later in the existing redirect plugin/server redirect configuration.
+- `/how-to-apply/` now redirects directly to `/membership/apply/`.
 - `/news/` includes existing production post featured-image derivatives under `/2026/04/`; these assets return 200 and are not missing staging migration assets.
 - Continue post-cutover visual QA on real desktop/mobile devices, especially home motion/spacing, About leadership/committee copy, member detail pages, and legal copy.
 
@@ -201,4 +208,3 @@ All templates below were imported as drafts and had original Elementor display c
 1. Monitor production for 404s, redirect chains, form submissions, and analytics events during the first live hours.
 2. Run manual mobile QA on real devices and fix any visual regressions found.
 3. Keep rollback snapshot pages 8929-8933 until the post-cutover monitoring window is complete.
-4. Later cleanup: remove or override the legacy `/how-to-apply/` -> `/become-a-member/` redirect so it goes directly to `/membership/apply/`.
