@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.3.2
+ * Version: 0.3.3
  * Author: CYGMA
  */
 
@@ -367,7 +367,7 @@ h1 .elementor-heading-title {
     -webkit-animation: mask-out 0.5s steps(22) forwards !important;
     animation: mask-out 0.5s steps(22) forwards !important;
     pointer-events: none !important;
-    z-index: 0 !important;
+    z-index: -1 !important;
 }
 
 .footer-newsletter-section .elementor-button:hover::before {
@@ -379,6 +379,14 @@ h1 .elementor-heading-title {
 .footer-newsletter-section .elementor-button .elementor-button-text {
     position: relative !important;
     z-index: 1 !important;
+}
+
+.footer-newsletter-section .elementor-element-758e089 {
+    transform: matrix3d(0.999848, 0.0174524, 0, 0, -0.0174524, 0.999848, 0, 0, 0, 0, 1, -2, 0, 0, 0, 1) !important;
+}
+
+.footer-newsletter-section .elementor-element-e9d21ae {
+    transform: matrix3d(0.999848, -0.0174524, 0, 0, 0.0174524, 0.999848, 0, 0, 0, 0, 1, -2, 0, 0, 0, 1) !important;
 }
 
 .elementor-element-dd75627,

@@ -250,6 +250,13 @@ All templates below were imported as drafts and had original Elementor display c
 - The small footer text drift was corrected: the footer legal/company and address text now matches staging at `14px`, `font-weight:700`, `font-stretch:140%`, and `18.2px` line-height.
 - Production `/news/` now keeps old/live CYGMA content in the new staging structure: 7 visible news cards, featured card button `185x34`, grid cards `401x592`, excerpts clamped to `126px`, grid buttons `159x29`, no broken images, no staging-domain references, and no desktop overflow.
 
+## Footer Pixel Parity Pass
+
+- A footer-only computed-style audit was rerun with the newsletter section as the shared origin, removing page-height and outer-wrapper noise from the comparison.
+- `cygma-migration-tools` was updated to version 0.3.3 to restore the exact staging transform matrices on the newsletter form wrapper and its inner counter-rotated child, and to match staging's Subscribe hover pseudo-element stacking (`z-index:-1`).
+- Final footer verification confirms the newsletter form wrapper matches staging at `top=393`, `left=284`, `803x197`, with the same `matrix3d(0.999848, 0.0174524, ...)` transform; the inner child matches at `top=420`, `752x143`, with the inverse staging matrix. The remaining left-coordinate difference is sub-pixel only (`309.5` vs `309.499755859375`) and rounds differently by the browser.
+- Subscribe hover now matches staging animation state and stacking while using the production `/2026/05/hover-button-1-scaled.png` asset; production footer still has no broken images, no staging-domain references, and no desktop overflow.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
