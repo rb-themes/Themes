@@ -1,0 +1,49 @@
+# macOS
+.DS_Store
+
+# Local environment and secrets
+.htaccess
+wp-config.php
+wp-config-sample.php
+wp-content/debug.log
+
+# WordPress core and generated root files
+.well-known/
+license.txt
+readme.html
+wordfence-waf.php
+index.php
+wp-blog-header.php
+wp-comments-post.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-admin/
+wp-includes/
+
+# Ignore everything in wp-content by default.
+wp-content/*
+
+# Keep theme source under version control.
+!wp-content/themes/
+wp-content/themes/*
+!wp-content/themes/hitboox/
+!wp-content/themes/hitboox/**
+!wp-content/themes/hitboox-child/
+!wp-content/themes/hitboox-child/**
+!wp-content/themes/index.php
+
+# Ignore generated content, backups, and large binary artifacts.
+wp-content/ai1wm-backups/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/uploads/
+wp-content/wflogs/
+
+# Ignore plugins for now; add explicit exceptions later if custom plugins are introduced.
+wp-content/plugins/
