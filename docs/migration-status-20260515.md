@@ -136,8 +136,8 @@ All templates below were imported as drafts and had original Elementor display c
   - Current posts page setting is page 2158, slug `blog-grid`, while the public `/news/` page is page 18.
   - Draft `apply` 8759 already has parent page 15, slug `membership`; publishing it should create `/membership/apply/`, which currently returns 404.
   - Current live routes return 200 for `/`, `/about-us/`, `/members/`, `/news/`, `/membership/`, `/become-a-member/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, `/membershippolicy/`, and `/contact/`.
-  - No local By-Laws/statutes file was found in the workspace; the `By-Laws` CTA still needs a source document or final URL.
-  - `Relocate to Cyprus` has no direct live target at `/relocate-to-cyprus/`, `/relocate/`, or `/why-cyprus/`; existing `/cyprus/` page 19 returns 200 and can be used if approved.
+  - No local By-Laws/statutes file was found in the workspace; on 2026-05-15 the remaining `By-Laws` `#` target was approved to stay as designed in the new website for launch.
+  - `Relocate to Cyprus` has no direct live target at `/relocate-to-cyprus/`, `/relocate/`, or `/why-cyprus/`; on 2026-05-15 its `#` target was approved to stay as designed in the new website for launch.
   - Migration switches were rechecked and remain off: maintenance, redirects, and news routing.
   - Added a fourth off-by-default migration switch, `member_routing`, to support canonical `/members/[slug]/` URLs for the `memberships` CPT during cutover.
   - Live route audit found `/memberships/[slug]/` member URLs currently resolve, but `/members/[slug]/` redirects to the homepage before member routing is enabled.
@@ -150,13 +150,13 @@ All templates below were imported as drafts and had original Elementor display c
   - Draft page audit found 12 stale relative `/2026/04/` CSS asset references in `members-new` 8761; uploaded missing outline SVGs to production media IDs 8925-8928 and patched the draft CSS to resolving `/2026/05/` URLs.
   - Elementor `Clear Files & Data` was run after the members CSS asset patch.
   - Recheck confirms the 10 members CSS asset URLs resolve with 200, `members-new` has zero remaining `/2026/04/` references, all 9 draft previews return 200, and rendered draft previews show no broken images, staging references, old upload refs, or desktop horizontal overflow.
+  - User approval recorded on 2026-05-15: leave the remaining `#` links as designed in the new website; these are no longer cutover blockers.
 
 ## Remaining Stages
 
-1. Editorial/legal decision stage: final human review of home/about/news/legal copy, decide `Relocate to Cyprus` target, and provide/approve the By-Laws URL or file.
-2. Cutover preparation stage: prepare exact publish/slug/front-page/menu/template-condition operations and rollback steps for the approved window.
-3. Cutover execution stage: enable maintenance, publish/replace target pages and templates, update menus/header, set front page if needed, enable redirects/news routing, regenerate caches, and disable maintenance after checks.
-4. Post-cutover QA and monitoring stage: validate live routes, redirects, news URLs, noindex/indexing state, analytics/SEO basics, forms, mobile layouts, and rollback readiness.
+1. Final human QA/legal approval stage: review home/about/news/legal copy and approve the cutover window.
+2. Cutover execution stage: enable maintenance, publish/replace target pages and templates, update menus/header, set front page if needed, enable redirects/news/member routing, regenerate caches, and disable maintenance after checks.
+3. Post-cutover QA and monitoring stage: validate live routes, redirects, news/member URLs, noindex/indexing state, analytics/SEO basics, forms, mobile layouts, and rollback readiness.
 
 ## Current Blockers Before Cutover
 
@@ -164,7 +164,7 @@ All templates below were imported as drafts and had original Elementor display c
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
 - News archive draft templates no longer contain staging source term filters or staging loop-template IDs; first-pass preview QA is clean, but final manual QA is still required before enabling news templates/routing.
-- Remaining draft body `#` placeholders are intentionally left for editorial/document decision: `home-new` has `Relocate to Cyprus`; `about` has `By-Laws`.
+- Remaining draft body `#` placeholders are intentionally approved to stay as designed for launch: `home-new` has `Relocate to Cyprus`; `about` has `By-Laws`.
 - Legal pages now use the local `CYGMA/Docs/` source text, but a final legal/editorial read-through is still required before replacing production pages.
 - Published/global navigation still contains the old `How to apply`/`Join CYGMA` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 

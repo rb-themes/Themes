@@ -1,6 +1,6 @@
 # CYGMA Cutover Approval Packet - 2026-05-15
 
-This packet summarizes what still needs human approval before the production cutover can begin. It also records the automated checks completed after the cutover runbook and member-routing controls were prepared.
+This packet summarizes the final approval items before the production cutover can begin. It also records the automated checks completed after the cutover runbook and member-routing controls were prepared.
 
 ## Decision Items
 
@@ -14,13 +14,7 @@ Current state:
 - Existing production page `/cyprus/` returns 200, but the redirect map currently marks `/cyprus/` as 410 Gone.
 - `/relocate-to-cyprus/`, `/relocate/`, and `/why-cyprus/` are not live target pages.
 
-Approval options:
-
-- Use `/cyprus/` only if the 410 rule is removed from both migration redirect implementations and the page is editorially approved.
-- Use another approved live URL such as `/contact/` or `/membership/` as a temporary destination.
-- Keep the CTA hidden or remove it for cutover until a dedicated relocation page exists.
-
-Recommendation: do not enable the redirect map until this conflict is resolved.
+Decision recorded on 2026-05-15: keep the `#` target as designed in the new website for launch. Because this CTA will not point to `/cyprus/`, the existing `/cyprus/` 410 redirect-map rule does not need to change for cutover.
 
 ### By-Laws CTA
 
@@ -32,20 +26,14 @@ Current state:
 - Local workspace search found no By-Laws/statutes/constitution/memorandum source file.
 - Production WordPress media search found no matching By-Laws/statutes document.
 
-Approval options:
-
-- Provide the final By-Laws PDF/DOCX and approve uploading it to WordPress media.
-- Provide a final URL if the document is hosted elsewhere.
-- Hide or remove the CTA for cutover if the document is not ready.
-
-Recommendation: do not publish the About page until this CTA is resolved or intentionally removed.
+Decision recorded on 2026-05-15: keep the `#` target as designed in the new website for launch. No By-Laws document or external URL is required before cutover.
 
 ## Automated QA Completed
 
 - Searched local project files for By-Laws/statutes/legal source candidates; no relevant file found.
 - Searched production WordPress media/pages/posts for By-Laws/statutes/legal source candidates; no matching media document found.
 - Re-audited draft Elementor data for pages 8758-8766.
-- Confirmed remaining visible draft `#` placeholders are limited to `Relocate to Cyprus` on home and `By-Laws` on about; other `#` links in preview output are from admin/cookie tooling.
+- Confirmed remaining visible draft `#` placeholders are limited to `Relocate to Cyprus` on home and `By-Laws` on about; both are now approved to remain as designed for launch. Other `#` links in preview output are from admin/cookie tooling.
 - Confirmed no staging-domain references in the audited draft page data.
 - Confirmed no `/2026/04/` references remain in rendered draft previews.
 - Confirmed all 9 draft page previews return 200 with no broken images and no desktop horizontal overflow in the current browser viewport.
@@ -94,6 +82,4 @@ These results are expected before publishing draft pages or enabling migration r
 Cutover can proceed after these approvals are recorded:
 
 1. Final home/about/members/news/legal visual and editorial approval.
-2. Final `Relocate to Cyprus` CTA decision.
-3. Final `By-Laws` CTA document/URL/removal decision.
-4. Explicit approval to start the controlled cutover window.
+2. Explicit approval to start the controlled cutover window.

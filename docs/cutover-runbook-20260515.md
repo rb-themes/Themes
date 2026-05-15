@@ -18,8 +18,7 @@ This runbook is for the approved production cutover window from the current CYGM
 ## Approval Blockers
 
 - Final human visual/editorial QA is still required for home, about, members, news, and legal pages.
-- `Relocate to Cyprus` still needs an approved target. The current `/cyprus/` page exists, but the redirect map marks `/cyprus/` as 410 Gone, so using it requires removing that 410 rule or changing the CTA to another approved URL.
-- `By-Laws` still needs an approved document or URL. No By-Laws/statutes source file was found in the local workspace.
+- `Relocate to Cyprus` and `By-Laws` are approved to keep their `#` targets as designed in the new website for launch.
 - Final legal read-through is required after the legal draft body import from local source documents.
 
 ## Draft Page Map
@@ -98,7 +97,7 @@ The cutover-only MU plugin equivalents are versioned in `wp-content/mu-plugins/`
 - `/elementor-page-6064/`
 - `/7330-2/`
 
-Do not enable redirects until the `/cyprus/` CTA conflict is resolved.
+Because `Relocate to Cyprus` is approved to keep its `#` target for launch, the `/cyprus/` 410 rule can remain unchanged unless a new approved CTA target is provided later.
 
 ## News URL Map
 
@@ -148,7 +147,7 @@ Pre-cutover check showed `/members/[slug]/` redirects to the homepage while `/me
 
 1. Create a fresh production database backup and files backup.
 2. Confirm the worktree is clean and latest migration docs/code are pushed.
-3. Confirm all approval blockers above are resolved.
+3. Confirm final human QA/legal approval and explicit approval to start the cutover window.
 4. Enable maintenance mode from Tools -> CYGMA Migration or by creating `wp-content/maintenance.flag`.
 5. Confirm logged-out production requests return 503 with noindex headers, while logged-in admin access still works.
 6. Publish or swap approved draft pages in this order: target-path pages, legal pages, members/news pages, then homepage/front-page setting.
