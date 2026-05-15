@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.3.3
+ * Version: 0.3.5
  * Author: CYGMA
  */
 
@@ -329,6 +329,22 @@ h1 .elementor-heading-title {
 .elementor-element-1341d63 .elementor-heading-title,
 .elementor-element-71789fe .elementor-heading-title {
     font-stretch: 40% !important;
+}
+
+.elementor-element-1c640d06 h3.elementor-heading-title {
+    font-stretch: 145% !important;
+}
+
+.elementor-element-1c640d06 .elementor-element-66f967e7 .elementor-heading-title {
+    font-weight: 700 !important;
+    font-stretch: 25% !important;
+}
+
+.elementor-element-1c640d06 .elementor-element-26fc4251,
+.elementor-element-1c640d06 .elementor-element-26fc4251 .e-n-carousel,
+.elementor-element-1c640d06 .elementor-element-26fc4251 .swiper-wrapper,
+.elementor-element-1c640d06 .elementor-element-26fc4251 .swiper-slide {
+    height: 488px !important;
 }
 
 .footer-newsletter-section {

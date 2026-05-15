@@ -257,6 +257,12 @@ All templates below were imported as drafts and had original Elementor display c
 - Final footer verification confirms the newsletter form wrapper matches staging at `top=393`, `left=284`, `803x197`, with the same `matrix3d(0.999848, 0.0174524, ...)` transform; the inner child matches at `top=420`, `752x143`, with the inverse staging matrix. The remaining left-coordinate difference is sub-pixel only (`309.5` vs `309.499755859375`) and rounds differently by the browser.
 - Subscribe hover now matches staging animation state and stacking while using the production `/2026/05/hover-button-1-scaled.png` asset; production footer still has no broken images, no staging-domain references, and no desktop overflow.
 
+## Footer and Why Cyprus Root-Cause Pass
+
+- The footer screenshot difference was caused by wrapper/context differences between staging's Elementor footer wrapper and production's Hello/HFE `#colophon` shell, plus earlier missing form transforms. A footer-only audit using the newsletter section as the origin confirms the visible newsletter background, form, logo/contact rows, and copyright row now match staging. The footer and Why Cyprus background image files were also hash-checked byte-for-byte against staging and match exactly after accounting for production upload paths.
+- The large Why Cyprus visual difference was caused by production inheriting global heading typography on the carousel slide title: production rendered the slide H4 at `font-weight:900` and `font-stretch:140%`, while staging uses `font-weight:700` and `font-stretch:25%`. That made the slide title much taller and pushed the carousel/card layout out of place.
+- `cygma-migration-tools` was updated to version 0.3.5 to restore the staging Why Cyprus heading stretch, slide-title weight/stretch, and desktop carousel height. Final measured desktop parity for Why Cyprus now matches staging: section `1371x1170`, heading `700x153` at `top=234`, active slide `935x488` at `top=449.5`, slide title `551.859x224.406` at `top=487.5`, and slide image `345.141x488` at `top=449.5`.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
