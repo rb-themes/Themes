@@ -173,7 +173,7 @@ All templates below were imported as drafts and had original Elementor display c
 - The new CYGMA design is live on production.
 - Maintenance mode is off.
 - Redirect map, news routing, and member routing are on.
-- WordPress settings remain `show_on_front=page`, `page_on_front=8765`, and `page_for_posts=18`.
+- WordPress settings remain `show_on_front=page` and `page_on_front=8765`; `page_for_posts=0` so `/news/` renders the imported Elementor News page directly while custom routing keeps posts canonical under `/news/[slug]/`.
 - Staging remains separate and should stay noindex/nofollow.
 - Rollback snapshot pages 8929-8933 are draft-only and should remain unpublished unless rollback is required.
 
@@ -196,11 +196,19 @@ All templates below were imported as drafts and had original Elementor display c
 - Verification confirms `/how-to-apply/` now returns a single 301 directly to `https://cygma.eu/membership/apply/`, followed by a 200 final response.
 - Focused rechecks passed for `/become-a-member/`, `/about-us/`, `/membershippolicy/`, `/blog-grid/`, and `/memberships/gdcy/`, and target pages `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, and `/members/gdcy/` remain 200.
 
+## Visual Repair Pass
+
+- Production visual comparison against staging found that Elementor background image URLs were present in migrated page/template metadata, but generated production CSS omitted the `background-image` declarations because many image objects still carried stale staging attachment IDs.
+- Repaired Elementor image IDs for production records Home 8765, About 8760, Members 14, Apply 8759, Membership Policy 8758, Privacy Policy 8269, Cookie Policy 8273, Code of Conduct 8401, Header 8778, Footer 8776, News Archive 8775, and News Tag Archive 8772. The repair matched production media IDs by `cygma.eu/wp-content/uploads/2026/05/...` URL and had zero unmatched migrated assets.
+- Elementor Files & Data was cleared after the ID repair; regenerated CSS now includes the expected staging-style background assets such as `home-bg.png`, `Cygma-Hero-image.webp`, `about-us-hero-image.webp`, `our-mission-bg.webp`, `become-member-bg.webp`, and `News-bg.webp`.
+- `/news/` was switched from WordPress posts-page rendering to a normal Elementor page using the imported News design, because the active Elementor archive condition was not taking over the posts index on production. `page_for_posts` is now `0`; `/news/` remains a 200 page and `/news/[slug]/` post routes plus old root-post redirects still pass.
+- Final desktop visual-marker sweep passed for `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, and `/membership-policy/`: expected background assets render, headers and footers are present, and no broken images were found.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
 - `/how-to-apply/` now redirects directly to `/membership/apply/`.
-- `/news/` includes existing production post featured-image derivatives under `/2026/04/`; these assets return 200 and are not missing staging migration assets.
+- `/news/` is now the imported Elementor News design page. Individual news posts remain canonical at `/news/[slug]/`; existing production post featured-image derivatives under `/2026/04/` still return 200.
 - Continue post-cutover visual QA on real desktop/mobile devices, especially home motion/spacing, About leadership/committee copy, member detail pages, and legal copy.
 
 ## Next Recommended Actions
