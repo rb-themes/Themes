@@ -104,22 +104,27 @@ All templates below were imported as drafts and had original Elementor display c
 - Patched migrated draft page bodies from missing `/2026/04/` asset URLs to the new production `/2026/05/` media URLs.
 - Elementor `Clear Files & Data` was run again after the draft asset import and URL patch.
 - Re-audit confirms 112 of 112 migrated draft page-body asset URLs now resolve, with zero missing assets and zero remaining `/2026/04/` asset references.
+- Draft preview QA confirmed all migrated draft pages return 200: `home-new` 8765, `about` 8760, `members-new` 8761, `apply` 8759, `news-new` 8762, `membership-policy` 8758, `code-of-conduct-new` 8763, `cookie-policy-new` 8764, and `privacy-policy-new` 8766.
+- The production draft previews were missing staging's global horizontal overflow guard. Added draft-only Elementor page CSS to `home-new` and `apply`: `html, body { overflow-x: hidden; }`.
+- Rechecked `home-new` and `apply` previews after the CSS patch; both now have no horizontal overflow at the current desktop QA viewport.
+- Replaced the remaining placeholder sentence `Some tempting sentence here incentivising to join` in `apply`, `about`, and `members-new` with neutral CYGMA membership copy.
+- Imported Elementor template previews return 200 with no missing images or horizontal overflow in the current desktop QA viewport: news archive 8775, news tag archive 8772, featured news loop 8774, news card loop 8773, homepage news loop 8777, header 8778, and footer 8776.
+- Elementor `Clear Files & Data` was run again after visual QA draft patches.
 
 ## Current Blockers Before Cutover
 
 - The homepage/media URL blocker and obvious placeholder/typo blockers are cleared in stored draft data, but the homepage still needs human editorial review before publishing.
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
-- News archive draft templates no longer contain staging source term filters or staging loop-template IDs; visual QA is still required before enabling news templates/routing.
+- News archive draft templates no longer contain staging source term filters or staging loop-template IDs; first-pass preview QA is clean, but final manual QA is still required before enabling news templates/routing.
 - Remaining draft body `#` placeholders are intentionally left for editorial decision: `home-new` has `Learn More` and `Relocate to Cyprus`; `about` has `Learn More` and `By-Laws`.
 - Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
 - Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
 ## Next Recommended Actions
 
-1. Review production draft previews in wp-admin while logged in.
+1. Continue human visual QA of production draft previews in wp-admin while logged in, especially homepage motion/spacing and About leadership/committee copy.
 2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page, including deciding final targets for the remaining draft `#` placeholders.
-3. Visually QA imported draft Elementor templates, especially the news archive, tag archive, and loop items, then publish/apply conditions only during the approved cutover window.
-4. Test the draft news archive and loop templates against the 9 real production posts.
-5. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
-6. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
+3. Review imported draft Elementor templates against live production posts, then publish/apply conditions only during the approved cutover window.
+4. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
+5. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
