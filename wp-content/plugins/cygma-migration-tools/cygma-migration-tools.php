@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.6
+ * Version: 0.2.7
  * Author: CYGMA
  */
 
@@ -205,6 +205,7 @@ function cygma_migration_tools_design_custom_css($assets) {
     $venture_bold_url = esc_url_raw($assets['venture_bold']['url']);
     $venture_thin_url = esc_url_raw($assets['venture_thin']['url']);
     $hover_mask_url = esc_url_raw($assets['hover_mask']['url']);
+    $newsletter_bg_url = esc_url_raw($assets['newsletter_bg']['url']);
 
     return <<<CSS
 @font-face { font-family: "Roboto Flex variable"; font-display: auto; src: url("{$roboto_url}") format("truetype"); font-weight: 100 1000; font-stretch: 25% 151%; }
@@ -296,6 +297,19 @@ h1 .elementor-heading-title {
     font-stretch: 40% !important;
 }
 
+.footer-newsletter-section {
+    background-image: url("{$newsletter_bg_url}") !important;
+    background-size: cover !important;
+    background-position: 50% 0% !important;
+    background-repeat: no-repeat !important;
+}
+
+.footer-newsletter-section .elementor-form .elementor-button,
+.footer-newsletter-section .elementor-form .elementor-button * {
+    font-weight: 800 !important;
+    font-stretch: 150% !important;
+}
+
 @keyframes mask-in {
   from { -webkit-mask-position: 0 center; mask-position: 0 center; }
   to { -webkit-mask-position: 100% center; mask-position: 100% center; }
@@ -363,6 +377,7 @@ function cygma_migration_tools_sync_design_kit() {
         'venture_bold' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Bold.woff2', 'filename' => 'Venture13Bold.woff2'),
         'venture_thin' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Thin.woff2', 'filename' => 'Venture13Thin.woff2'),
         'hover_mask' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/hover-button-1-scaled.png', 'filename' => 'hover-button-1-scaled.png'),
+        'newsletter_bg' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/newletter-bg-desktop-1.webp', 'filename' => 'newletter-bg-desktop-1.webp'),
     );
     $assets = array();
 

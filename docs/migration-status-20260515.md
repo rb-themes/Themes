@@ -226,6 +226,14 @@ All templates below were imported as drafts and had original Elementor display c
 - The design Kit sync and HFE shell sync were run successfully on production. Migration switches remained `maintenance=false`, `redirects=true`, `news_routing=true`, and `member_routing=true`.
 - Final computed-style checks on `/`, `/about/`, `/members/`, `/membership/apply/`, and `/news/` confirmed the production body font is `Roboto Flex variable` with `font-weight:500` and `font-stretch:140%`, header/menu typography is `Venture13` with `font-weight:500` and `font-stretch:140%`, page hero titles use black `Roboto Flex variable` at `font-stretch:40%`, the home hero word metrics match staging (`The voice`, `of`, and `In` at `40%`; `Game`, `Development`, and `Cyprus` in blue Venture13 at `140%`), the header CTA is `202x37` with `font-weight:750` and `font-stretch:150%`, the hover mask animates from the production asset, there are no broken images, no staging-domain references, and no desktop overflow.
 
+## Footer, Logo, and Subscribe Parity Pass
+
+- A focused page-by-page audit compared staging and production shared sections on Home, About, Members, Apply, and News after the stricter typography pass.
+- Header and footer logo dimensions matched staging on all checked pages: the inner-page header logo is `204x56`, the footer logo is `203x56`, and the homepage visible hero logo remains `350x96` as on staging.
+- The audit found two remaining footer/subscribe differences: production was missing the staging newsletter background image `newletter-bg-desktop-1.webp`, and the Subscribe button was falling back to `font-weight:400` and `font-stretch:100%` instead of staging's `800` and `150%`.
+- `cygma-migration-tools` was updated to version 0.2.7 so `sync-design-kit` also downloads `newletter-bg-desktop-1.webp` to production uploads and applies the staging newsletter background CSS plus Subscribe button typography override.
+- Production was updated to plugin version 0.2.7 and `sync-design-kit` was run successfully. Rechecks on `/`, `/about/`, `/members/`, `/membership/apply/`, and `/news/` confirmed the newsletter background uses the production `/wp-content/uploads/2026/05/newletter-bg-desktop-1.webp` asset, background size/position/repeat match staging, Subscribe is `24px` with `font-weight:800` and `font-stretch:150%`, footer text length matches staging, and production still has no broken images, no staging-domain references, and no desktop overflow.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
