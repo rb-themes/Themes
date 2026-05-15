@@ -151,27 +151,41 @@ All templates below were imported as drafts and had original Elementor display c
   - Elementor `Clear Files & Data` was run after the members CSS asset patch.
   - Recheck confirms the 10 members CSS asset URLs resolve with 200, `members-new` has zero remaining `/2026/04/` references, all 9 draft previews return 200, and rendered draft previews show no broken images, staging references, old upload refs, or desktop horizontal overflow.
   - User approval recorded on 2026-05-15: leave the remaining `#` links as designed in the new website; these are no longer cutover blockers.
+- Production cutover executed under maintenance mode:
+  - Maintenance was enabled first and verified as HTTP 503 with `X-Robots-Tag: noindex, nofollow, noarchive` for logged-out visitors.
+  - Rollback draft snapshots were created before overwriting live page data: Members 8929, News 8930, Privacy Policy 8931, Cookie Policy 8932, and Code of Conduct 8933.
+  - New home page 8765 was published and set as `page_on_front`; WordPress settings are now `show_on_front=page`, `page_on_front=8765`, and `page_for_posts=18`.
+  - New target pages were published: About 8760 at `/about/`, Apply 8759 at `/membership/apply/`, and Membership Policy 8758 at `/membership-policy/`.
+  - Existing public URLs were updated in place with approved new Elementor data: Members 14, News 18, Privacy Policy 8269, Cookie Policy 8273, and Code of Conduct 8401.
+  - Elementor templates were published and conditioned: header 8778 `include/general`, footer 8776 `include/general`, news archive 8775 `include/archive/post_archive`, news tag archive 8772 `include/archive/post_tag`, and member detail 8769 `include/singular/memberships` plus `include/singular/memberships_by_author`.
+  - Old Elementor footer 7757 and old membership template 8087 had their display conditions cleared; existing post single template 7479 remains active for `include/singular/post`.
+  - Header menu item 6508 now points to Home 8765, item 6507 now points to About 8760, and item 8617 now points to Apply 8759 at `/membership/apply/`.
+  - Redirect, news routing, and member routing switches are enabled; maintenance is disabled.
+  - Elementor `Clear Files & Data` was run after template/routing activation.
+  - Public route QA confirms 200 responses for `/`, `/about/`, `/members/`, `/membership/`, `/membership/apply/`, `/news/`, `/membership-policy/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, `/contact/`, `/members/gdcy/`, and `/news/cygma-registers-to-represent-the-game-development-industry-in-cyprus/`.
+  - Public redirect QA confirms `/about-us/`, `/become-a-member/`, `/membershippolicy/`, `/contacts/`, `/blog/`, `/blog-list/`, `/blog-grid/`, root-level news posts, and `/memberships/gdcy/` redirect to the expected new targets; `/how-to-apply/` still chains through `/become-a-member/` before reaching `/membership/apply/` due to an existing legacy redirect outside the custom map.
+  - `/cyprus/` returns 410 with noindex headers as planned.
+  - Public content scans for key routes found no staging-domain, noindex, or maintenance markers.
+  - A redirect-priority hardening patch was added to the custom redirect code and deployed to production with a rebuilt `deploy/cygma-migration-tools.zip`; the plugin switches remained `maintenance=false`, `redirects=true`, `news_routing=true`, and `member_routing=true` after deployment.
 
-## Remaining Stages
+## Current Production State
 
-1. Final human QA/legal approval stage: review home/about/news/legal copy and approve the cutover window.
-2. Cutover execution stage: enable maintenance, publish/replace target pages and templates, update menus/header, set front page if needed, enable redirects/news/member routing, regenerate caches, and disable maintenance after checks.
-3. Post-cutover QA and monitoring stage: validate live routes, redirects, news/member URLs, noindex/indexing state, analytics/SEO basics, forms, mobile layouts, and rollback readiness.
+- The new CYGMA design is live on production.
+- Maintenance mode is off.
+- Redirect map, news routing, and member routing are on.
+- Staging remains separate and should stay noindex/nofollow.
+- Rollback snapshot pages 8929-8933 are draft-only and should remain unpublished unless rollback is required.
 
-## Current Blockers Before Cutover
+## Current Post-Cutover Notes
 
-- The homepage/media URL blocker and obvious placeholder/typo blockers are cleared in stored draft data, but the homepage still needs human editorial review before publishing.
-- The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
-- Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
-- News archive draft templates no longer contain staging source term filters or staging loop-template IDs; first-pass preview QA is clean, but final manual QA is still required before enabling news templates/routing.
-- Remaining draft body `#` placeholders are intentionally approved to stay as designed for launch: `home-new` has `Relocate to Cyprus`; `about` has `By-Laws`.
-- Legal pages now use the local `CYGMA/Docs/` source text, but a final legal/editorial read-through is still required before replacing production pages.
-- Published/global navigation still contains the old `How to apply`/`Join CYGMA` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
+- Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
+- `/how-to-apply/` reaches `/membership/apply/` through a two-step 301 chain (`/how-to-apply/` -> `/become-a-member/` -> `/membership/apply/`). This is non-critical but can be cleaned up later in the existing redirect plugin/server redirect configuration.
+- `/news/` includes existing production post featured-image derivatives under `/2026/04/`; these assets return 200 and are not missing staging migration assets.
+- Continue post-cutover visual QA on real desktop/mobile devices, especially home motion/spacing, About leadership/committee copy, member detail pages, and legal copy.
 
 ## Next Recommended Actions
 
-1. Continue human visual QA of production draft previews in wp-admin while logged in, especially homepage motion/spacing and About leadership/committee copy.
-2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page, including deciding final targets for the remaining draft `#` placeholders.
-3. Review imported draft Elementor templates against live production posts, then publish/apply conditions only during the approved cutover window.
-4. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
-5. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
+1. Monitor production for 404s, redirect chains, form submissions, and analytics events during the first live hours.
+2. Run manual mobile QA on real devices and fix any visual regressions found.
+3. Keep rollback snapshot pages 8929-8933 until the post-cutover monitoring window is complete.
+4. Later cleanup: remove or override the legacy `/how-to-apply/` -> `/become-a-member/` redirect so it goes directly to `/membership/apply/`.

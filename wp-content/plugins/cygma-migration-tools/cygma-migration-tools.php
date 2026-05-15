@@ -314,7 +314,7 @@ add_action('template_redirect', function () {
         wp_safe_redirect(home_url($rule['target']), 301);
         exit;
     }
-}, 1);
+}, -1000);
 
 function cygma_migration_tools_news_base() {
     return 'news';
