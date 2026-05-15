@@ -173,8 +173,21 @@ All templates below were imported as drafts and had original Elementor display c
 - The new CYGMA design is live on production.
 - Maintenance mode is off.
 - Redirect map, news routing, and member routing are on.
+- WordPress settings remain `show_on_front=page`, `page_on_front=8765`, and `page_for_posts=18`.
 - Staging remains separate and should stay noindex/nofollow.
 - Rollback snapshot pages 8929-8933 are draft-only and should remain unpublished unless rollback is required.
+
+## Post-Cutover Monitoring Pass
+
+- Full news route sweep passed for all 9 published posts: `/news/[slug]/` returns 200 and each old root-level post URL returns 301 to the canonical news URL.
+- Full member route sweep passed for all 23 published `memberships` items: `/members/[slug]/` returns 200 and each old `/memberships/[slug]/` URL returns 301 to the canonical member URL.
+- Core redirect/410 sweep passed for `/about-us/`, `/become-a-member/`, `/membershippolicy/`, `/contacts/`, `/blog/`, `/blog-list/`, `/blog-grid/`, `/cyprus/`, `/team/`, `/events/`, `/faqs/`, `/elementor-page-6064/`, and `/7330-2/`.
+- Production headers for `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, and `/privacy-policy/` return 200 with no `X-Robots-Tag` noindex header.
+- Production HTML markers on `/`, `/about/`, `/members/`, `/membership/apply/`, and `/news/` show Rank Math `index, follow` robots meta and Google Tag Manager `GTM-KWM977PP`; no staging-domain or maintenance markers were found.
+- `robots.txt`, `sitemap_index.xml`, `page-sitemap.xml`, and `post-sitemap.xml` return 200.
+- Staging remains noindex/nofollow in public HTML: `<meta name='robots' content='noindex, nofollow' />`.
+- Contact page still exposes a contact-form marker in public HTML.
+- Browser/MCP viewport resizing remained locked to a 1371px viewport, so true mobile layout QA still needs a real mobile device or a browser session with working viewport emulation.
 
 ## Current Post-Cutover Notes
 
