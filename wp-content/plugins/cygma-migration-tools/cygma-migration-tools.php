@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: CYGMA
  */
 
@@ -17,6 +17,7 @@ function cygma_migration_tools_default_options() {
         'maintenance' => false,
         'redirects' => false,
         'news_routing' => false,
+        'member_routing' => false,
     );
 }
 
@@ -80,12 +81,18 @@ add_action('admin_post_cygma_migration_tools_save', function () {
         'maintenance' => !empty($_POST['maintenance']),
         'redirects' => !empty($_POST['redirects']),
         'news_routing' => !empty($_POST['news_routing']),
+        'member_routing' => !empty($_POST['member_routing']),
     );
 
     update_option(CYGMA_MIGRATION_TOOLS_OPTION, $next, false);
 
     if ($previous['news_routing'] !== $next['news_routing']) {
         cygma_migration_tools_register_news_rewrite();
+        flush_rewrite_rules(false);
+    }
+
+    if ($previous['member_routing'] !== $next['member_routing']) {
+        cygma_migration_tools_register_member_rewrite();
         flush_rewrite_rules(false);
     }
 
@@ -130,6 +137,15 @@ function cygma_migration_tools_render_settings_page() {
                         <label>
                             <input type="checkbox" name="news_routing" value="1" <?php checked($options['news_routing']); ?>>
                             Make posts canonical at /news/[slug]/ and redirect old root post URLs.
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Member URLs</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="member_routing" value="1" <?php checked($options['member_routing']); ?>>
+                            Make membership profiles canonical at /members/[slug]/ and redirect old /memberships/[slug]/ URLs.
                         </label>
                     </td>
                 </tr>
@@ -304,6 +320,14 @@ function cygma_migration_tools_news_base() {
     return 'news';
 }
 
+function cygma_migration_tools_member_base() {
+    return 'members';
+}
+
+function cygma_migration_tools_member_post_type() {
+    return 'memberships';
+}
+
 function cygma_migration_tools_news_post_url($post) {
     if (!$post instanceof WP_Post || $post->post_type !== 'post') {
         return '';
@@ -316,9 +340,29 @@ function cygma_migration_tools_register_news_rewrite() {
     add_rewrite_rule('^' . cygma_migration_tools_news_base() . '/([^/]+)/?$', 'index.php?name=$matches[1]', 'top');
 }
 
+function cygma_migration_tools_member_url($post) {
+    if (!$post instanceof WP_Post || $post->post_type !== cygma_migration_tools_member_post_type()) {
+        return '';
+    }
+
+    return home_url('/' . cygma_migration_tools_member_base() . '/' . $post->post_name . '/');
+}
+
+function cygma_migration_tools_register_member_rewrite() {
+    add_rewrite_rule(
+        '^' . cygma_migration_tools_member_base() . '/([^/]+)/?$',
+        'index.php?' . cygma_migration_tools_member_post_type() . '=$matches[1]',
+        'top'
+    );
+}
+
 add_action('init', function () {
     if (cygma_migration_tools_is_enabled('news_routing')) {
         cygma_migration_tools_register_news_rewrite();
+    }
+
+    if (cygma_migration_tools_is_enabled('member_routing')) {
+        cygma_migration_tools_register_member_rewrite();
     }
 });
 
@@ -342,6 +386,16 @@ add_filter('preview_post_link', function ($preview_link, $post) {
     return $news_url ? add_query_arg('preview', 'true', $news_url) : $preview_link;
 }, 10, 2);
 
+add_filter('post_type_link', function ($permalink, $post) {
+    if (!cygma_migration_tools_is_enabled('member_routing')) {
+        return $permalink;
+    }
+
+    $member_url = cygma_migration_tools_member_url($post);
+
+    return $member_url ?: $permalink;
+}, 10, 2);
+
 add_action('template_redirect', function () {
     if (!cygma_migration_tools_is_enabled('news_routing') || !is_singular('post')) {
         return;
@@ -363,6 +417,26 @@ add_action('template_redirect', function () {
     }
 }, 2);
 
+add_action('template_redirect', function () {
+    if (!cygma_migration_tools_is_enabled('member_routing') || !is_singular(cygma_migration_tools_member_post_type())) {
+        return;
+    }
+
+    $member_url = cygma_migration_tools_member_url(get_queried_object());
+
+    if (!$member_url) {
+        return;
+    }
+
+    $path = cygma_migration_tools_current_path();
+    $canonical_path = wp_parse_url($member_url, PHP_URL_PATH) ?: '/';
+
+    if (trailingslashit($path) !== trailingslashit($canonical_path)) {
+        wp_safe_redirect($member_url, 301);
+        exit;
+    }
+}, 2);
+
 add_filter('rank_math/frontend/canonical', function ($canonical) {
     if (!cygma_migration_tools_is_enabled('news_routing') || !is_singular('post')) {
         return $canonical;
@@ -371,4 +445,14 @@ add_filter('rank_math/frontend/canonical', function ($canonical) {
     $news_url = cygma_migration_tools_news_post_url(get_queried_object());
 
     return $news_url ?: $canonical;
+});
+
+add_filter('rank_math/frontend/canonical', function ($canonical) {
+    if (!cygma_migration_tools_is_enabled('member_routing') || !is_singular(cygma_migration_tools_member_post_type())) {
+        return $canonical;
+    }
+
+    $member_url = cygma_migration_tools_member_url(get_queried_object());
+
+    return $member_url ?: $canonical;
 });

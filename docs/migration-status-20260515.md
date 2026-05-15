@@ -139,6 +139,10 @@ All templates below were imported as drafts and had original Elementor display c
   - No local By-Laws/statutes file was found in the workspace; the `By-Laws` CTA still needs a source document or final URL.
   - `Relocate to Cyprus` has no direct live target at `/relocate-to-cyprus/`, `/relocate/`, or `/why-cyprus/`; existing `/cyprus/` page 19 returns 200 and can be used if approved.
   - Migration switches were rechecked and remain off: maintenance, redirects, and news routing.
+  - Added a fourth off-by-default migration switch, `member_routing`, to support canonical `/members/[slug]/` URLs for the `memberships` CPT during cutover.
+  - Live route audit found `/memberships/[slug]/` member URLs currently resolve, but `/members/[slug]/` redirects to the homepage before member routing is enabled.
+  - Production has 23 published `memberships` items, not 22 as the original planning note expected.
+  - Created `docs/cutover-runbook-20260515.md` with exact page/template/menu IDs, routing controls, news/member URL maps, cutover order, QA checks, and rollback steps.
 
 ## Remaining Stages
 

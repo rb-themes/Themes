@@ -41,6 +41,7 @@ wp-content/themes/*
 !wp-content/mu-plugins/
 !wp-content/mu-plugins/cygma-maintenance.php
 !wp-content/mu-plugins/cygma-news-routing.php
+!wp-content/mu-plugins/cygma-member-routing.php
 !wp-content/mu-plugins/cygma-redirects.php
 
 # Ignore generated content, backups, and large binary artifacts.
