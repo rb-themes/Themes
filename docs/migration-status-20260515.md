@@ -110,6 +110,18 @@ All templates below were imported as drafts and had original Elementor display c
 - Replaced the remaining placeholder sentence `Some tempting sentence here incentivising to join` in `apply`, `about`, and `members-new` with neutral CYGMA membership copy.
 - Imported Elementor template previews return 200 with no missing images or horizontal overflow in the current desktop QA viewport: news archive 8775, news tag archive 8772, featured news loop 8774, news card loop 8773, homepage news loop 8777, header 8778, and footer 8776.
 - Elementor `Clear Files & Data` was run again after visual QA draft patches.
+- Draft CTA link cleanup was extended after preview QA found Elementor buttons with no explicit URL:
+  - `home-new`: hero/industry/about `Learn More` buttons and `Meet the Team` now point to `/about-us/`; `Check the Benefits` points to `/membership/apply/`; `View All Members` points to `/members/`; `View Older News` points to `/news/`.
+  - `about`: `Learn More` points to `/about-us/`; bottom `Become a Member` points to `/membership/apply/`.
+  - `members-new`: `Become a Member` points to `/membership/apply/`.
+  - `apply`: all `Become a Member` buttons point to `/membership/apply/`; `Contact Us` points to `/contact/` after confirming `/contact/` returns 200 and `/contact-us/` returns 404.
+- Legal draft pages were compared against local source documents in `CYGMA/Docs/`; imported draft bodies were incomplete, so the legal body areas were replaced from the source `.docx` text while keeping the pages draft-only:
+  - `membership-policy` 8758 from `CYGMA_Membership_terms_23042026.docx`.
+  - `code-of-conduct-new` 8763 from `CYGMA-code-of-conduct.docx`.
+  - `cookie-policy-new` 8764 from `CYGMA-cookie-policy.docx`.
+  - `privacy-policy-new` 8766 from `CYGMA_Privacy_Policy_23042026.docx`.
+- Legal draft preview recheck confirms all four legal pages return 200, have no missing images, no horizontal overflow, and source-scale word counts.
+- Elementor `Clear Files & Data` was run again after the legal source import and CTA link cleanup.
 
 ## Current Blockers Before Cutover
 
@@ -117,8 +129,8 @@ All templates below were imported as drafts and had original Elementor display c
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
 - News archive draft templates no longer contain staging source term filters or staging loop-template IDs; first-pass preview QA is clean, but final manual QA is still required before enabling news templates/routing.
-- Remaining draft body `#` placeholders are intentionally left for editorial decision: `home-new` has `Learn More` and `Relocate to Cyprus`; `about` has `Learn More` and `By-Laws`.
-- Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
+- Remaining draft body `#` placeholders are intentionally left for editorial/document decision: `home-new` has `Relocate to Cyprus`; `about` has `By-Laws`.
+- Legal pages now use the local `CYGMA/Docs/` source text, but a final legal/editorial read-through is still required before replacing production pages.
 - Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
 ## Next Recommended Actions
