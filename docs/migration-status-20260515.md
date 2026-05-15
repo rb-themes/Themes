@@ -90,13 +90,17 @@ All templates below were imported as drafts and had original Elementor display c
 - Elementor `Clear Files & Data` was run again after the news template draft ID patch.
 - Production currently has 9 published posts intended for news migration; all 9 have featured images. One draft post, `Elementor #8082`, has no slug and should be excluded from news QA.
 - With news routing still off, root post URLs return 200, `/news/[slug]/` currently redirects back to the root post URL, and `/news/` remains the current production news page.
+- News archive draft query cleanup was applied after confirming production category IDs `17` and `18` return 404:
+  - `cygma-new-news-archive` ID 8775 now has no invalid term filters; the featured loop uses `8774` and is limited to 1 latest post, while the main loop uses `8773` with pagination.
+  - `cygma-new-news-tag-page-archive` ID 8772 now uses `8773`, no empty term filter, and `current_query` for tag archive context.
+- Elementor `Clear Files & Data` was run again after the news archive query cleanup.
 
 ## Current Blockers Before Cutover
 
 - The homepage media URL blocker and obvious placeholder/typo blockers are cleared in stored draft data, but the homepage still needs human editorial review before publishing.
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
-- Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported as draft templates for review.
-- News archive draft templates still contain staging source term filters for category IDs `17` (`Featured Posts`) and `18` (`News`). Those category IDs do not exist on production and return 404, so the archive query strategy must be decided before enabling news templates/routing.
+- Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
+- News archive draft templates no longer contain staging source term filters or staging loop-template IDs; visual QA is still required before enabling news templates/routing.
 - Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
 - Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
@@ -104,8 +108,7 @@ All templates below were imported as drafts and had original Elementor display c
 
 1. Review production draft previews in wp-admin while logged in.
 2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page.
-3. Review imported draft Elementor templates, then publish/apply conditions only during the approved cutover window.
-4. Decide the production news archive query strategy: create/map `Featured Posts` and `News` categories, or change the draft archive filters to use existing production categories/all posts.
-5. Test the draft news archive and loop templates against the 9 real production posts.
-6. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
-7. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
+3. Visually QA imported draft Elementor templates, especially the news archive, tag archive, and loop items, then publish/apply conditions only during the approved cutover window.
+4. Test the draft news archive and loop templates against the 9 real production posts.
+5. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
+6. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
