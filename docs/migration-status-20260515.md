@@ -10,6 +10,8 @@
   - News URLs: off
 - Confirmed production and staging public URLs still return normal HTTP 200 responses after plugin activation.
 - Used authenticated WordPress REST calls inside wp-admin sessions to copy selected staging page content and Elementor meta into production draft pages.
+- Enabled WordPress `Discourage search engines from indexing this site` on staging only.
+- Verified staging public HTML now includes `<meta name='robots' content='noindex, nofollow' />`.
 
 ## Production Draft Pages Created
 
@@ -37,6 +39,7 @@ Review-only drafts created with `-new` slugs to avoid changing live URLs:
 - Production `/about/` draft preview renders and exposes the Elementor edit link.
 - Public production remains unchanged: homepage returns 200 and `/about-us/` still returns 200.
 - Redirects and `/news/[slug]/` routing remain disabled until target pages are published and QA passes.
+- Staging is now noindex/nofollow through WordPress Reading Settings.
 
 ## Current Blockers Before Cutover
 
