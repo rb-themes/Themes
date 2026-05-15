@@ -80,7 +80,10 @@ All templates below were imported as drafts and had original Elementor display c
 - Staging is now noindex/nofollow through WordPress Reading Settings.
 - Migrated production drafts and draft Elementor templates have zero remaining `cygma.bonafideshops.com` references after domain cleanup.
 - Stored migrated page draft data now has zero remaining `Example`, `Piorities`, `Hitboox`, and `/become-a-member/` matches in the audited production drafts after safe cleanup.
-- Elementor frontend preview for `home-new` may still serve a stale rendered copy until Elementor/cache data is regenerated from wp-admin; verify regenerated preview HTML before publishing.
+- Elementor `Clear Files & Data` was run successfully from production wp-admin after draft cleanup.
+- Regenerated draft preview HTML for `home-new`, `apply`, and `about` no longer shows `Example`, `Piorities`, or Hitboox placeholder copy.
+- Remaining `/become-a-member/` matches in regenerated preview HTML come from the global menu/header item for `How to apply`, not from the migrated page draft bodies.
+- Migration switches were rechecked after cache regeneration and remain off: maintenance, redirect map, and news routing.
 
 ## Current Blockers Before Cutover
 
@@ -88,13 +91,13 @@ All templates below were imported as drafts and had original Elementor display c
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported as draft templates for review.
 - Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
-- Elementor/cache regeneration should be run from wp-admin and previews rechecked before any final publish or cutover.
+- Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
 ## Next Recommended Actions
 
 1. Review production draft previews in wp-admin while logged in.
-2. Regenerate Elementor/cache data from wp-admin and recheck migrated draft previews for stale rendered output.
-3. Continue editorial/legal review in Elementor or source docs before publishing any migrated page.
-4. Review imported draft Elementor templates, then publish/apply conditions only during the approved cutover window.
-5. Test the draft news archive and loop templates against the 9 real production posts.
+2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page.
+3. Review imported draft Elementor templates, then publish/apply conditions only during the approved cutover window.
+4. Test the draft news archive and loop templates against the 9 real production posts.
+5. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
 6. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
