@@ -40,6 +40,8 @@ wp-content/themes/*
 # Keep maintenance and migration control code under version control.
 !wp-content/mu-plugins/
 !wp-content/mu-plugins/cygma-maintenance.php
+!wp-content/mu-plugins/cygma-news-routing.php
+!wp-content/mu-plugins/cygma-redirects.php
 
 # Ignore generated content, backups, and large binary artifacts.
 wp-content/ai1wm-backups/

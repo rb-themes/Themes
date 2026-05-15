@@ -11,6 +11,10 @@ Carefully migrate the new CYGMA design from `https://cygma.bonafideshops.com` to
 - Initial theme snapshot commit: `e26ed04`
 - Local backups exist from 2026-05-14, including files archives and database dumps
 - Repository tracks custom theme code and excludes WordPress core, uploads, backups, logs, and secrets
+- Production backup options show active theme `hello-elementor`, stylesheet `hello-elementor`, and permalink structure `/%postname%/`
+- Production public REST API currently exposes 9 real posts at root-level URLs
+- Staging public REST API currently exposes the new page set, but its news posts appear to be placeholder/copy content and should not overwrite production posts blindly
+- Public header checks on 2026-05-15 showed both staging and production returning HTTP 200; maintenance/noindex was not active
 
 ## Source Materials To Collect
 
@@ -94,6 +98,15 @@ Important examples:
 - Preserve SEO fields: SEO title, SEO description, canonical URL, Open Graph image, and sitemap inclusion.
 - Test with at least three representative posts before production cutover.
 
+Implementation started in git:
+
+- `wp-content/mu-plugins/cygma-news-routing.php` makes native posts canonical at `/news/[slug]/`.
+- Old root-level post URLs redirect to `/news/[slug]/` with HTTP 301.
+- The plugin updates post permalinks and Rank Math canonical URLs.
+- The plugin adds a rewrite rule and flushes rewrite rules once using a version marker.
+
+Important: visual design for news remains an Elementor Theme Builder/database task. The routing plugin handles URL structure and SEO canonical behavior, but it does not replace the Elementor single post template design.
+
 ### 3a. Members Implementation
 
 - Keep the Custom Post Type UI setup for Memberships, but plan the user-facing name as Members after migration.
@@ -144,6 +157,16 @@ Additional indexing protection:
 - During production cutover, keep maintenance enabled until final QA passes.
 - Do not rely on `robots.txt` alone; blocked pages can still remain indexed without a noindex response.
 
+### 4a. Redirects And Removed Pages
+
+Implementation started in git:
+
+- `wp-content/mu-plugins/cygma-redirects.php` implements core 301 redirects and 410 removals from the redirect map.
+- 410 responses include `X-Robots-Tag: noindex, nofollow, noarchive`.
+- Added `/blog-grid/` -> `/news/` because production currently exposes that old news page publicly.
+
+Deploy this plugin only when the destination pages exist, especially `/about/`, `/membership/apply/`, and `/membership-policy/`.
+
 ### 5. Build And Staging QA
 
 - Pull the latest staging design files and identify all database-backed design dependencies.
@@ -162,7 +185,11 @@ Additional indexing protection:
 - Create fresh production backup.
 - Put production into maintenance mode with the MU-plugin flag.
 - Disable caches and security features that could interfere with migration.
-- Deploy versioned theme and MU-plugin files.
+- Deploy versioned MU-plugin files:
+  - `wp-content/mu-plugins/cygma-maintenance.php`
+  - `wp-content/mu-plugins/cygma-news-routing.php`
+  - `wp-content/mu-plugins/cygma-redirects.php`
+- Confirm active theme before deploying theme code. Current production backup shows `hello-elementor`, so `hitboox` or `hitboox-child` changes will not affect production unless the active theme changes.
 - Import required database content and settings from staging, avoiding blind overwrite of production-only records unless already approved.
 - Run domain search-replace only for approved staging-to-production URLs.
 - Flush permalinks and all caches.
@@ -192,8 +219,8 @@ Additional indexing protection:
 
 ## Immediate Next Steps
 
-1. Inventory staging and production WordPress versions, active plugins, and active theme settings.
-2. Decide whether production content will be migrated by database copy, selective export/import, or manual rebuild page by page.
-3. Build and test the news post templates before touching production.
-4. Convert and review policy DOCX files before importing them into production pages.
-5. Schedule a short maintenance window for the final cutover.
+1. Log into staging and export Elementor Theme Builder templates for Home, About, Members, Membership, Apply, News archive, News single, Contact, and legal pages.
+2. Log into production and export a fresh full backup immediately before any live change.
+3. Create or import missing production destination pages: `/about/`, `/membership/apply/`, and `/membership-policy/`.
+4. Build/import and test the Elementor news post templates using the 9 real production posts.
+5. Deploy MU-plugins to production, enable maintenance mode, import approved templates/content, run QA, then disable maintenance mode.
