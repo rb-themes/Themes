@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.1
+ * Version: 0.2.2
  * Author: CYGMA
  */
 
@@ -99,6 +99,62 @@ add_action('admin_post_cygma_migration_tools_save', function () {
     wp_safe_redirect(add_query_arg('updated', '1', wp_get_referer() ?: admin_url('tools.php?page=cygma-migration-tools')));
     exit;
 });
+
+add_action('rest_api_init', function () {
+    register_rest_route('cygma-migration-tools/v1', '/sync-hfe-shells', array(
+        'methods' => 'POST',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        },
+        'callback' => 'cygma_migration_tools_sync_hfe_shells',
+    ));
+});
+
+function cygma_migration_tools_sync_hfe_shells() {
+    $pairs = array(
+        188 => array('source' => 8778, 'type' => 'header'),
+        65 => array('source' => 8776, 'type' => 'footer'),
+    );
+    $results = array();
+
+    foreach ($pairs as $target_id => $config) {
+        $source_id = (int) $config['source'];
+        $source_data = get_post_meta($source_id, '_elementor_data', true);
+
+        if (!$source_data) {
+            $results[] = array(
+                'target' => $target_id,
+                'source' => $source_id,
+                'updated' => false,
+                'reason' => 'missing_source_data',
+            );
+            continue;
+        }
+
+        update_post_meta($target_id, '_elementor_edit_mode', 'builder');
+        update_post_meta($target_id, '_elementor_template_type', 'wp-post');
+        update_post_meta($target_id, '_elementor_data', wp_slash($source_data));
+        update_post_meta($target_id, '_elementor_page_settings', get_post_meta($source_id, '_elementor_page_settings', true));
+
+        clean_post_cache($target_id);
+
+        $results[] = array(
+            'target' => $target_id,
+            'source' => $source_id,
+            'type' => $config['type'],
+            'updated' => true,
+            'data_length' => strlen($source_data),
+        );
+    }
+
+    if (did_action('elementor/loaded') && class_exists('Elementor\\Plugin')) {
+        Elementor\Plugin::instance()->files_manager->clear_cache();
+    }
+
+    return rest_ensure_response(array(
+        'updated' => $results,
+    ));
+}
 
 function cygma_migration_tools_render_settings_page() {
     $options = cygma_migration_tools_options();

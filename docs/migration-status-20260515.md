@@ -204,6 +204,14 @@ All templates below were imported as drafts and had original Elementor display c
 - `/news/` was switched from WordPress posts-page rendering to a normal Elementor page using the imported News design, because the active Elementor archive condition was not taking over the posts index on production. `page_for_posts` is now `0`; `/news/` remains a 200 page and `/news/[slug]/` post routes plus old root-post redirects still pass.
 - Final desktop visual-marker sweep passed for `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, and `/membership-policy/`: expected background assets render, headers and footers are present, and no broken images were found.
 
+## Header Footer Menu Sync Pass
+
+- Production public DOM showed the active shared layout was still coming from Header Footer Elementor shell posts 188 and 65, not directly from the imported Elementor Pro Theme Builder templates 8778 and 8776.
+- `cygma-migration-tools` was updated to version 0.2.2 with an admin-only REST sync action that copies the repaired Elementor data from templates 8778 and 8776 into HFE shell posts 188 and 65. The sync preserves HFE's `wp-post` Elementor document type and slashes Elementor JSON before saving so the shells render correctly.
+- Production `main-menu` was rebuilt with the staging-style navigation shape using production routes: About Us `/about/`, Members `#` with member-directory/filter children, News `/news/`, More `#` with Membership, How to Apply, Membership Policy, and Contact children. The approved parent `#` links remain intentional.
+- The revised plugin was deployed, the HFE sync endpoint returned successful updates for header 188 and footer 65, and the HFE plugin remained active.
+- Public route sweep passed for `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, `/membership-policy/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, and `/contact/`: header 188 now renders `ABOUT US MEMBERS NEWS MORE Become a Member`, footer 65 renders the new newsletter/footer/design-credit layout, the old `COMPANY INFORMATION`/`Join CYGMA` markers are gone, and no broken images were found.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
