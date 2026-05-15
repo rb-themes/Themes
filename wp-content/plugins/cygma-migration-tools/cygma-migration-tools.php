@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.3
+ * Version: 0.2.6
  * Author: CYGMA
  */
 
@@ -217,6 +217,19 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
     position: relative;
+    font-family: "Roboto Flex variable", sans-serif !important;
+    font-weight: 500 !important;
+    font-stretch: 140% !important;
+}
+
+.elementor-188,
+.elementor-188 a,
+.elementor-188 .elementor-item,
+.elementor-location-header,
+.elementor-location-header a,
+.elementor-location-header .elementor-item {
+    font-weight: 500 !important;
+    font-stretch: 140% !important;
 }
 
 .organic-fill-button {
@@ -271,7 +284,15 @@ html, body {
     min-height: 37px !important;
 }
 
-h1.elementor-heading-title {
+h1,
+h1.elementor-heading-title,
+h1 .elementor-heading-title {
+    font-stretch: 40% !important;
+}
+
+.elementor-element-1997827 .elementor-heading-title,
+.elementor-element-1341d63 .elementor-heading-title,
+.elementor-element-71789fe .elementor-heading-title {
     font-stretch: 40% !important;
 }
 
