@@ -94,6 +94,11 @@ All templates below were imported as drafts and had original Elementor display c
   - `cygma-new-news-archive` ID 8775 now has no invalid term filters; the featured loop uses `8774` and is limited to 1 latest post, while the main loop uses `8773` with pagination.
   - `cygma-new-news-tag-page-archive` ID 8772 now uses `8773`, no empty term filter, and `current_query` for tag archive context.
 - Elementor `Clear Files & Data` was run again after the news archive query cleanup.
+- Draft link cleanup was applied to obvious internal CTAs only:
+  - `Become a Member` draft-page links now point to `/membership/apply/` in `home-new`, `about`, `apply`, and `members-new`.
+  - `View All Members` on `home-new` now points to `/members/`.
+  - Re-audit confirms zero `/become-a-member/` links remain in migrated draft page bodies.
+- Elementor `Clear Files & Data` was run again after the draft link cleanup.
 
 ## Current Blockers Before Cutover
 
@@ -101,13 +106,14 @@ All templates below were imported as drafts and had original Elementor display c
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
 - News archive draft templates no longer contain staging source term filters or staging loop-template IDs; visual QA is still required before enabling news templates/routing.
+- Remaining draft body `#` placeholders are intentionally left for editorial decision: `home-new` has `Learn More` and `Relocate to Cyprus`; `about` has `Learn More` and `By-Laws`.
 - Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
 - Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
 ## Next Recommended Actions
 
 1. Review production draft previews in wp-admin while logged in.
-2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page.
+2. Continue editorial/legal review in Elementor or source docs before publishing any migrated page, including deciding final targets for the remaining draft `#` placeholders.
 3. Visually QA imported draft Elementor templates, especially the news archive, tag archive, and loop items, then publish/apply conditions only during the approved cutover window.
 4. Test the draft news archive and loop templates against the 9 real production posts.
 5. Update the global menu/header `How to apply` route during cutover after the target membership application page is ready.
