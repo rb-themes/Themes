@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.3.0
+ * Version: 0.3.2
  * Author: CYGMA
  */
 
@@ -123,6 +123,14 @@ add_action('rest_api_init', function () {
             return current_user_can('manage_options');
         },
         'callback' => 'cygma_migration_tools_repair_members_loop',
+    ));
+
+    register_rest_route('cygma-migration-tools/v1', '/repair-home-news-loop', array(
+        'methods' => 'POST',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        },
+        'callback' => 'cygma_migration_tools_repair_home_news_loop',
     ));
 });
 
@@ -332,6 +340,108 @@ h1 .elementor-heading-title {
 
 .footer-newsletter-section .elementor-form .elementor-button,
 .footer-newsletter-section .elementor-form .elementor-button * {
+    font-weight: 800 !important;
+    font-stretch: 150% !important;
+}
+
+.footer-newsletter-section .elementor-button {
+    position: relative !important;
+    overflow: hidden !important;
+    background: #FFED62 !important;
+    transition: 0.5s !important;
+    isolation: isolate !important;
+}
+
+.footer-newsletter-section .elementor-button::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(180deg, #FFBF00 0%, #FF8D0B 100%) !important;
+    -webkit-mask-image: url("{$hover_mask_url}") !important;
+    mask-image: url("{$hover_mask_url}") !important;
+    -webkit-mask-size: 2300% 100% !important;
+    mask-size: 2300% 100% !important;
+    -webkit-animation: mask-out 0.5s steps(22) forwards !important;
+    animation: mask-out 0.5s steps(22) forwards !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+.footer-newsletter-section .elementor-button:hover::before {
+    -webkit-animation: mask-in 0.7s steps(22) forwards !important;
+    animation: mask-in 0.7s steps(22) forwards !important;
+}
+
+.footer-newsletter-section .elementor-button .elementor-button-content-wrapper,
+.footer-newsletter-section .elementor-button .elementor-button-text {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.elementor-element-dd75627,
+.elementor-element-dd75627 *,
+.elementor-element-76d5b6f,
+.elementor-element-76d5b6f * {
+    font-weight: 700 !important;
+}
+
+.elementor-8774 .elementor-heading-title {
+    font-weight: 700 !important;
+}
+
+.elementor-8774 .elementor-button {
+    width: 185px !important;
+    min-width: 185px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    font-weight: 800 !important;
+    font-stretch: 150% !important;
+}
+
+.elementor-8774 .elementor-button * {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    font-weight: 800 !important;
+    font-stretch: 150% !important;
+}
+
+.elementor-8773.e-loop-item {
+    height: 592px !important;
+    overflow: hidden !important;
+}
+
+.elementor-element-dc63636 .elementor-8773.e-loop-item {
+    height: 716px !important;
+}
+
+.elementor-8773 .elementor-element-0d0fd89 {
+    height: 126px !important;
+    overflow: hidden !important;
+}
+
+.elementor-8773 .elementor-element-0d0fd89 .elementor-widget-container,
+.elementor-8773 .elementor-element-0d0fd89 .elementor-widget-container > * {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 6 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+.elementor-8773 .elementor-button {
+    width: 159px !important;
+    min-width: 159px !important;
+    height: 29px !important;
+    min-height: 29px !important;
+    font-weight: 800 !important;
+    font-stretch: 150% !important;
+}
+
+.elementor-8773 .elementor-button * {
+    min-width: 0 !important;
+    min-height: 0 !important;
     font-weight: 800 !important;
     font-stretch: 150% !important;
 }
@@ -614,6 +724,81 @@ function cygma_migration_tools_repair_members_loop() {
         'updated' => true,
         'counts' => $counts,
         'term_sync' => $term_sync,
+    ));
+}
+
+function cygma_migration_tools_repair_home_news_elementor_value($value, &$counts) {
+    if (is_array($value)) {
+        if (isset($value['widgetType'], $value['settings']) && $value['widgetType'] === 'loop-grid' && is_array($value['settings'])) {
+            $is_home_news_loop = isset($value['id']) && $value['id'] === '473ae46';
+            $uses_staging_template = isset($value['settings']['template_id']) && (string) $value['settings']['template_id'] === '866';
+
+            if ($is_home_news_loop || $uses_staging_template) {
+                $value['settings']['post_type'] = 'post';
+                $value['settings']['posts_post_type'] = 'post';
+                $value['settings']['query_post_type'] = 'post';
+                $value['settings']['template_id'] = '8773';
+                $value['settings']['posts_per_page'] = '3';
+                $counts['loop_grid_settings']++;
+            }
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = cygma_migration_tools_repair_home_news_elementor_value($item, $counts);
+        }
+
+        return $value;
+    }
+
+    if ($value === '866' || $value === 866) {
+        $counts['template_to_8773']++;
+        return is_int($value) ? 8773 : '8773';
+    }
+
+    return $value;
+}
+
+function cygma_migration_tools_repair_home_news_loop() {
+    $page_id = 8765;
+    $data = get_post_meta($page_id, '_elementor_data', true);
+
+    if (!$data) {
+        return new WP_Error('cygma_missing_home_data', 'Home page Elementor data was not found.', array('status' => 404));
+    }
+
+    $before = $data;
+    $decoded = json_decode($data, true);
+
+    if (!is_array($decoded)) {
+        return new WP_Error('cygma_invalid_home_data', 'Home page Elementor data is not valid JSON.', array('status' => 500));
+    }
+
+    $counts = array(
+        'loop_grid_settings' => 0,
+        'template_to_8773' => 0,
+    );
+    $repaired = cygma_migration_tools_repair_home_news_elementor_value($decoded, $counts);
+    $data = wp_json_encode($repaired);
+
+    if ($data === $before) {
+        return rest_ensure_response(array(
+            'page' => $page_id,
+            'updated' => false,
+            'counts' => $counts,
+        ));
+    }
+
+    update_post_meta($page_id, '_elementor_data', wp_slash($data));
+    clean_post_cache($page_id);
+
+    if (did_action('elementor/loaded') && class_exists('Elementor\\Plugin')) {
+        Elementor\Plugin::instance()->files_manager->clear_cache();
+    }
+
+    return rest_ensure_response(array(
+        'page' => $page_id,
+        'updated' => true,
+        'counts' => $counts,
     ));
 }
 

@@ -242,6 +242,14 @@ All templates below were imported as drafts and had original Elementor display c
 - Final checks confirm `/members/` now renders 16 visible member cards in the current desktop viewport, matching staging's visible grid count; the Browse Members section height matches staging, no "nothing found" message remains, badge overlays render from production `/2026/05/` assets, and production has no broken images, staging-domain references, or desktop overflow.
 - News was rechecked against staging: the new page structure and card layout are active on production, while production intentionally shows real CYGMA news posts/images instead of staging's duplicated placeholder/demo news content.
 
+## Home, Footer Hover, and News Styling Pass
+
+- A block-level computed-style audit found production Home was missing the visible Latest News cards because the migrated home loop still referenced staging loop template `866`. `cygma-migration-tools` was updated to version 0.3.2 with a `repair-home-news-loop` REST action that maps the Home Latest News loop to production news-card loop template 8773 and keeps it querying production posts.
+- Production Home now renders 3 real CYGMA news cards in the Latest News section, while matching staging's desktop section geometry: Latest News section `1022px` high, loop container `716px` high, card width `397px`, and button `159x29` with `font-weight:800` and `font-stretch:150%`.
+- Subscribe hover was rechecked with a browser hover event. Production now uses the synced production hover mask `/wp-content/uploads/2026/05/hover-button-1-scaled.png`, keeps the `mask-in` animation, and preserves the staging Subscribe size/typography of `213x63`, `24px`, `font-weight:800`, and `font-stretch:150%`.
+- The small footer text drift was corrected: the footer legal/company and address text now matches staging at `14px`, `font-weight:700`, `font-stretch:140%`, and `18.2px` line-height.
+- Production `/news/` now keeps old/live CYGMA content in the new staging structure: 7 visible news cards, featured card button `185x34`, grid cards `401x592`, excerpts clamped to `126px`, grid buttons `159x29`, no broken images, no staging-domain references, and no desktop overflow.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
