@@ -52,4 +52,7 @@ wp-content/uploads/
 wp-content/wflogs/
 
 # Ignore plugins for now; add explicit exceptions later if custom plugins are introduced.
-wp-content/plugins/
+!wp-content/plugins/
+wp-content/plugins/*
+!wp-content/plugins/cygma-migration-tools/
+!wp-content/plugins/cygma-migration-tools/**
