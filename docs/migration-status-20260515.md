@@ -99,10 +99,15 @@ All templates below were imported as drafts and had original Elementor display c
   - `View All Members` on `home-new` now points to `/members/`.
   - Re-audit confirms zero `/become-a-member/` links remain in migrated draft page bodies.
 - Elementor `Clear Files & Data` was run again after the draft link cleanup.
+- Draft asset QA found 96 missing production upload URLs across migrated page bodies, mostly staging April design assets.
+- Imported 95 public staging assets into the production media library, plus 2 Roman Zanin assets whose source filenames contain a hidden Unicode separator.
+- Patched migrated draft page bodies from missing `/2026/04/` asset URLs to the new production `/2026/05/` media URLs.
+- Elementor `Clear Files & Data` was run again after the draft asset import and URL patch.
+- Re-audit confirms 112 of 112 migrated draft page-body asset URLs now resolve, with zero missing assets and zero remaining `/2026/04/` asset references.
 
 ## Current Blockers Before Cutover
 
-- The homepage media URL blocker and obvious placeholder/typo blockers are cleared in stored draft data, but the homepage still needs human editorial review before publishing.
+- The homepage/media URL blocker and obvious placeholder/typo blockers are cleared in stored draft data, but the homepage still needs human editorial review before publishing.
 - The staging/imported About page has safe placeholder labels replaced, but repeated headings and section copy still need editorial review before publishing.
 - Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported, patched, and left as draft templates for review.
 - News archive draft templates no longer contain staging source term filters or staging loop-template IDs; visual QA is still required before enabling news templates/routing.
