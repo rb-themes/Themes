@@ -212,6 +212,12 @@ All templates below were imported as drafts and had original Elementor display c
 - The revised plugin was deployed, the HFE sync endpoint returned successful updates for header 188 and footer 65, and the HFE plugin remained active.
 - Public route sweep passed for `/`, `/about/`, `/members/`, `/membership/apply/`, `/news/`, `/membership-policy/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, and `/contact/`: header 188 now renders `ABOUT US MEMBERS NEWS MORE Become a Member`, footer 65 renders the new newsletter/footer/design-credit layout, the old `COMPANY INFORMATION`/`Join CYGMA` markers are gone, and no broken images were found.
 
+## Page-by-Page Visual Parity Sweep
+
+- Compared staging and production route pairs for Home, About, Members, Apply, News, Membership Policy, Privacy Policy, Cookie Policy, and Code of Conduct. Production returned 200 for every mapped page, kept the new shared header/footer, had zero broken production images, and had no remaining `cygma.bonafideshops.com` references in public HTML.
+- Production menu targets were checked directly and all resolve with 200 final responses: `/`, `/about/`, `/members/`, the three member filter URLs, `/news/`, `/membership/apply/`, `/membership-policy/`, and `/contact/`.
+- Desktop overflow checks passed for the compared production pages. Browser viewport emulation is still not reliable for true mobile QA in this session: after requesting a 390px viewport, both staging and production still reported `window.innerWidth=1371`, so real mobile-device QA remains required.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.
