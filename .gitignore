@@ -37,6 +37,10 @@ wp-content/themes/*
 !wp-content/themes/hitboox-child/**
 !wp-content/themes/index.php
 
+# Keep maintenance and migration control code under version control.
+!wp-content/mu-plugins/
+!wp-content/mu-plugins/cygma-maintenance.php
+
 # Ignore generated content, backups, and large binary artifacts.
 wp-content/ai1wm-backups/
 wp-content/cache/
