@@ -234,6 +234,14 @@ All templates below were imported as drafts and had original Elementor display c
 - `cygma-migration-tools` was updated to version 0.2.7 so `sync-design-kit` also downloads `newletter-bg-desktop-1.webp` to production uploads and applies the staging newsletter background CSS plus Subscribe button typography override.
 - Production was updated to plugin version 0.2.7 and `sync-design-kit` was run successfully. Rechecks on `/`, `/about/`, `/members/`, `/membership/apply/`, and `/news/` confirmed the newsletter background uses the production `/wp-content/uploads/2026/05/newletter-bg-desktop-1.webp` asset, background size/position/repeat match staging, Subscribe is `24px` with `font-weight:800` and `font-stretch:150%`, footer text length matches staging, and production still has no broken images, no staging-domain references, and no desktop overflow.
 
+## Logo and Members Grid Repair Pass
+
+- A byte-level logo comparison found production `/wp-content/uploads/2026/05/logo.svg` was not the same SVG as staging `/wp-content/uploads/2026/03/logo.svg`, despite matching rendered dimensions. `cygma-migration-tools` was updated so `sync-design-kit` overwrites production `logo.svg` and `CYGMA-Logo-mobile.svg` from staging. Verification now confirms matching SHA-256 hashes for the desktop logo.
+- The Members page was missing the staging-style card grid because the imported Elementor loop still expected staging's `member` post type and `membership-level` taxonomy, while production uses the existing `memberships` CPT. Version 0.3.0 registers a production `membership-level` taxonomy for `memberships`, syncs Full/Ordinary/Associate/Academic terms from the existing member categories, assigns all 23 published memberships to those terms, and repairs the Members page loop/filter/template settings to use production `memberships` records with the imported loop item 8770.
+- The staging membership badge SVGs were synced into production uploads and applied to the member-card badge wrapper by production category/membership-level class, restoring the small top-left membership symbols on the card design.
+- Final checks confirm `/members/` now renders 16 visible member cards in the current desktop viewport, matching staging's visible grid count; the Browse Members section height matches staging, no "nothing found" message remains, badge overlays render from production `/2026/05/` assets, and production has no broken images, staging-domain references, or desktop overflow.
+- News was rechecked against staging: the new page structure and card layout are active on production, while production intentionally shows real CYGMA news posts/images instead of staging's duplicated placeholder/demo news content.
+
 ## Current Post-Cutover Notes
 
 - Remaining `#` targets for `Relocate to Cyprus` and `By-Laws` are intentional and approved as designed for launch.

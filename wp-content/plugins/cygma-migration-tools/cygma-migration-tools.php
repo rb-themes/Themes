@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CYGMA Migration Tools
  * Description: Controlled maintenance, redirect, and news URL tools for the CYGMA redesign migration.
- * Version: 0.2.7
+ * Version: 0.3.0
  * Author: CYGMA
  */
 
@@ -116,7 +116,29 @@ add_action('rest_api_init', function () {
         },
         'callback' => 'cygma_migration_tools_sync_design_kit',
     ));
+
+    register_rest_route('cygma-migration-tools/v1', '/repair-members-loop', array(
+        'methods' => 'POST',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        },
+        'callback' => 'cygma_migration_tools_repair_members_loop',
+    ));
 });
+
+add_action('init', 'cygma_migration_tools_register_membership_level_taxonomy', 20);
+
+function cygma_migration_tools_register_membership_level_taxonomy() {
+    register_taxonomy('membership-level', array('memberships'), array(
+        'label' => 'Membership Levels',
+        'public' => true,
+        'show_ui' => true,
+        'show_admin_column' => true,
+        'show_in_rest' => true,
+        'hierarchical' => false,
+        'rewrite' => false,
+    ));
+}
 
 function cygma_migration_tools_sync_hfe_shells() {
     $pairs = array(
@@ -164,7 +186,7 @@ function cygma_migration_tools_sync_hfe_shells() {
     ));
 }
 
-function cygma_migration_tools_sync_design_asset($source_url, $filename) {
+function cygma_migration_tools_sync_design_asset($source_url, $filename, $overwrite = false) {
     $uploads = wp_upload_dir();
     $target_dir = trailingslashit($uploads['basedir']) . '2026/05';
     $target_url = trailingslashit($uploads['baseurl']) . '2026/05/' . $filename;
@@ -174,7 +196,7 @@ function cygma_migration_tools_sync_design_asset($source_url, $filename) {
         return new WP_Error('cygma_asset_directory_failed', 'Could not create target uploads directory.');
     }
 
-    if (!file_exists($target_file)) {
+    if ($overwrite || !file_exists($target_file)) {
         $response = wp_remote_get($source_url, array('timeout' => 30));
 
         if (is_wp_error($response)) {
@@ -206,6 +228,10 @@ function cygma_migration_tools_design_custom_css($assets) {
     $venture_thin_url = esc_url_raw($assets['venture_thin']['url']);
     $hover_mask_url = esc_url_raw($assets['hover_mask']['url']);
     $newsletter_bg_url = esc_url_raw($assets['newsletter_bg']['url']);
+    $member_associate_url = esc_url_raw($assets['member_associate']['url']);
+    $member_ordinary_url = esc_url_raw($assets['member_ordinary']['url']);
+    $member_full_url = esc_url_raw($assets['member_full']['url']);
+    $member_academic_url = esc_url_raw($assets['member_academic']['url']);
 
     return <<<CSS
 @font-face { font-family: "Roboto Flex variable"; font-display: auto; src: url("{$roboto_url}") format("truetype"); font-weight: 100 1000; font-stretch: 25% 151%; }
@@ -310,6 +336,32 @@ h1 .elementor-heading-title {
     font-stretch: 150% !important;
 }
 
+.e-loop-item.type-memberships .elementor-element-e148907 {
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 25px 25px !important;
+}
+
+.e-loop-item.category-associate .elementor-element-e148907,
+.e-loop-item.membership-level-associate .elementor-element-e148907 {
+    background-image: url("{$member_associate_url}") !important;
+}
+
+.e-loop-item.category-ordinary .elementor-element-e148907,
+.e-loop-item.membership-level-ordinary .elementor-element-e148907 {
+    background-image: url("{$member_ordinary_url}") !important;
+}
+
+.e-loop-item.category-full .elementor-element-e148907,
+.e-loop-item.membership-level-full .elementor-element-e148907 {
+    background-image: url("{$member_full_url}") !important;
+}
+
+.e-loop-item.category-academic .elementor-element-e148907,
+.e-loop-item.membership-level-academic .elementor-element-e148907 {
+    background-image: url("{$member_academic_url}") !important;
+}
+
 @keyframes mask-in {
   from { -webkit-mask-position: 0 center; mask-position: 0 center; }
   to { -webkit-mask-position: 100% center; mask-position: 100% center; }
@@ -378,11 +430,17 @@ function cygma_migration_tools_sync_design_kit() {
         'venture_thin' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/Venture13Thin.woff2', 'filename' => 'Venture13Thin.woff2'),
         'hover_mask' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/hover-button-1-scaled.png', 'filename' => 'hover-button-1-scaled.png'),
         'newsletter_bg' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/newletter-bg-desktop-1.webp', 'filename' => 'newletter-bg-desktop-1.webp'),
+        'logo' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/logo.svg', 'filename' => 'logo.svg', 'overwrite' => true),
+        'mobile_logo' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/03/CYGMA-Logo-mobile.svg', 'filename' => 'CYGMA-Logo-mobile.svg', 'overwrite' => true),
+        'member_associate' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/membership-symbol-01-white.svg', 'filename' => 'membership-symbol-01-white.svg'),
+        'member_ordinary' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/membership-symbol-02-white.svg', 'filename' => 'membership-symbol-02-white.svg'),
+        'member_full' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/membership-symbol-03-white.svg', 'filename' => 'membership-symbol-03-white.svg'),
+        'member_academic' => array('source' => 'https://cygma.bonafideshops.com/wp-content/uploads/2026/04/membership-symbol-04-white.svg', 'filename' => 'membership-symbol-04-white.svg'),
     );
     $assets = array();
 
     foreach ($asset_sources as $key => $asset) {
-        $synced = cygma_migration_tools_sync_design_asset($asset['source'], $asset['filename']);
+        $synced = cygma_migration_tools_sync_design_asset($asset['source'], $asset['filename'], !empty($asset['overwrite']));
 
         if (is_wp_error($synced)) {
             return $synced;
@@ -402,6 +460,160 @@ function cygma_migration_tools_sync_design_kit() {
         'kit' => 4,
         'assets' => $assets,
         'updated' => true,
+    ));
+}
+
+function cygma_migration_tools_count_replacements($before, $after, $search) {
+    return substr_count($before, $search) - substr_count($after, $search);
+}
+
+function cygma_migration_tools_sync_membership_level_terms() {
+    cygma_migration_tools_register_membership_level_taxonomy();
+
+    $levels = array(
+        'academic' => 'Academic',
+        'associate' => 'Associate',
+        'full' => 'Full',
+        'ordinary' => 'Ordinary',
+    );
+    $term_results = array();
+
+    foreach ($levels as $slug => $name) {
+        $term = term_exists($slug, 'membership-level');
+
+        if (!$term) {
+            $term = wp_insert_term($name, 'membership-level', array('slug' => $slug));
+        }
+
+        $term_results[$slug] = is_wp_error($term) ? $term->get_error_message() : true;
+    }
+
+    $posts = get_posts(array(
+        'post_type' => 'memberships',
+        'post_status' => 'publish',
+        'numberposts' => -1,
+        'fields' => 'ids',
+    ));
+    $assigned = array();
+
+    foreach ($posts as $post_id) {
+        $categories = get_the_terms($post_id, 'category');
+        $slugs = is_array($categories) ? wp_list_pluck($categories, 'slug') : array();
+        $matched = array_values(array_intersect(array_keys($levels), $slugs));
+
+        if ($matched) {
+            wp_set_object_terms($post_id, $matched, 'membership-level', false);
+            $assigned[$post_id] = $matched;
+        }
+    }
+
+    return array(
+        'terms' => $term_results,
+        'assigned' => count($assigned),
+        'assigned_posts' => $assigned,
+    );
+}
+
+function cygma_migration_tools_repair_members_elementor_value($value, &$counts) {
+    if (is_array($value)) {
+        if (isset($value['widgetType'], $value['settings']) && $value['widgetType'] === 'loop-grid' && is_array($value['settings'])) {
+            $value['settings']['post_type'] = 'memberships';
+            $value['settings']['posts_post_type'] = 'memberships';
+            $value['settings']['query_post_type'] = 'memberships';
+            $value['settings']['template_id'] = '8770';
+            $counts['loop_grid_settings']++;
+        }
+
+        if (isset($value['widgetType'], $value['settings']) && $value['widgetType'] === 'taxonomy-filter' && is_array($value['settings'])) {
+            $value['settings']['taxonomy'] = 'membership-level';
+            $value['settings']['selected_taxonomy'] = 'membership-level';
+            $value['settings']['filter_taxonomy'] = 'membership-level';
+            $counts['taxonomy_filter_settings']++;
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = cygma_migration_tools_repair_members_elementor_value($item, $counts);
+        }
+
+        return $value;
+    }
+
+    if ($value === 'member') {
+        $counts['member_to_memberships']++;
+        return 'memberships';
+    }
+
+    if ($value === 'category') {
+        $counts['category_to_membership_level']++;
+        return 'membership-level';
+    }
+
+    if ($value === '1818' || $value === 1818) {
+        $counts['template_to_8770']++;
+        return is_int($value) ? 8770 : '8770';
+    }
+
+    if (is_string($value)) {
+        $next = str_replace('e-filter-a4eb1e7-category', 'e-filter-a4eb1e7-membership-level', $value);
+
+        if ($next !== $value) {
+            $counts['filter_key']++;
+        }
+
+        return $next;
+    }
+
+    return $value;
+}
+
+function cygma_migration_tools_repair_members_loop() {
+    $page_id = 14;
+    $data = get_post_meta($page_id, '_elementor_data', true);
+
+    if (!$data) {
+        return new WP_Error('cygma_missing_members_data', 'Members page Elementor data was not found.', array('status' => 404));
+    }
+
+    $before = $data;
+    $term_sync = cygma_migration_tools_sync_membership_level_terms();
+    $decoded = json_decode($data, true);
+
+    if (!is_array($decoded)) {
+        return new WP_Error('cygma_invalid_members_data', 'Members page Elementor data is not valid JSON.', array('status' => 500));
+    }
+
+    $counts = array(
+        'loop_grid_settings' => 0,
+        'taxonomy_filter_settings' => 0,
+        'member_to_memberships' => 0,
+        'category_to_membership_level' => 0,
+        'template_to_8770' => 0,
+        'filter_key' => 0,
+    );
+    $repaired = cygma_migration_tools_repair_members_elementor_value($decoded, $counts);
+    $data = wp_json_encode($repaired);
+
+    if ($data === $before) {
+        return rest_ensure_response(array(
+            'page' => $page_id,
+            'updated' => false,
+            'counts' => $counts,
+            'term_sync' => $term_sync,
+        ));
+    }
+
+    update_post_meta($page_id, '_elementor_data', wp_slash($data));
+    clean_post_cache($page_id);
+
+    if (did_action('elementor/loaded') && class_exists('Elementor\\Plugin')) {
+        Elementor\Plugin::instance()->files_manager->clear_cache();
+    }
+
+    return rest_ensure_response(array(
+        'page' => $page_id,
+        'updated' => true,
+        'counts' => $counts,
+        'term_sync' => $term_sync,
     ));
 }
 
