@@ -131,6 +131,21 @@ All templates below were imported as drafts and had original Elementor display c
 - Re-audit confirms 12 of 12 imported draft template upload URLs now resolve, with zero remaining `/2026/03/` or `/2026/04/` template asset references.
 - Preview smoke test for draft news archive 8775, news tag archive 8772, footer 8776, and header 8778 returns 200 with no broken images or horizontal overflow in the current desktop QA viewport.
 - Elementor `Clear Files & Data` was run again after the template asset patch.
+- Cutover readiness audit was performed without changing live content:
+  - Current front page is published page 5917, slug `home-1`; WordPress `show_on_front` is `page` and `page_on_front` is 5917.
+  - Current posts page setting is page 2158, slug `blog-grid`, while the public `/news/` page is page 18.
+  - Draft `apply` 8759 already has parent page 15, slug `membership`; publishing it should create `/membership/apply/`, which currently returns 404.
+  - Current live routes return 200 for `/`, `/about-us/`, `/members/`, `/news/`, `/membership/`, `/become-a-member/`, `/privacy-policy/`, `/cookie-policy/`, `/code-of-conduct/`, `/membershippolicy/`, and `/contact/`.
+  - No local By-Laws/statutes file was found in the workspace; the `By-Laws` CTA still needs a source document or final URL.
+  - `Relocate to Cyprus` has no direct live target at `/relocate-to-cyprus/`, `/relocate/`, or `/why-cyprus/`; existing `/cyprus/` page 19 returns 200 and can be used if approved.
+  - Migration switches were rechecked and remain off: maintenance, redirects, and news routing.
+
+## Remaining Stages
+
+1. Editorial/legal decision stage: final human review of home/about/news/legal copy, decide `Relocate to Cyprus` target, and provide/approve the By-Laws URL or file.
+2. Cutover preparation stage: prepare exact publish/slug/front-page/menu/template-condition operations and rollback steps for the approved window.
+3. Cutover execution stage: enable maintenance, publish/replace target pages and templates, update menus/header, set front page if needed, enable redirects/news routing, regenerate caches, and disable maintenance after checks.
+4. Post-cutover QA and monitoring stage: validate live routes, redirects, news URLs, noindex/indexing state, analytics/SEO basics, forms, mobile layouts, and rollback readiness.
 
 ## Current Blockers Before Cutover
 
