@@ -12,6 +12,8 @@
 - Used authenticated WordPress REST calls inside wp-admin sessions to copy selected staging page content and Elementor meta into production draft pages.
 - Enabled WordPress `Discourage search engines from indexing this site` on staging only.
 - Verified staging public HTML now includes `<meta name='robots' content='noindex, nofollow' />`.
+- Imported staging homepage media into the production media library and patched the `home-new` draft to use production media URLs.
+- Imported key staging Elementor templates into production as draft templates with live conditions removed.
 
 ## Production Draft Pages Created
 
@@ -34,24 +36,56 @@ Review-only drafts created with `-new` slugs to avoid changing live URLs:
 | `home` | 8765 | `home-new` | Draft | Contains 44 staging upload URL references; do not publish before media cleanup. |
 | `privacy-policy` | 8766 | `privacy-policy-new` | Draft | Review against Notion/DOCX source before replacing live legal page. |
 
+## Production Media Imported
+
+| Production media ID | File | Production URL |
+| ---: | --- | --- |
+| 8779 | `about-us-img-01-scaled-1.jpg` | `https://cygma.eu/wp-content/uploads/2026/05/about-us-img-01-scaled-1.jpg` |
+| 8780 | `slider-image-01.jpg` | `https://cygma.eu/wp-content/uploads/2026/05/slider-image-01.jpg` |
+| 8781 | `slider-image-02-e1775328520906.webp` | `https://cygma.eu/wp-content/uploads/2026/05/slider-image-02-e1775328520906.webp` |
+| 8782 | `logo.svg` | `https://cygma.eu/wp-content/uploads/2026/05/logo.svg` |
+
+The `home-new` draft now has zero staging upload references and 44 production upload references.
+
+## Production Elementor Template Drafts Created
+
+All templates below were imported as drafts and had original Elementor display conditions removed, so they do not affect live production yet.
+
+| Staging template | Production draft ID | Production slug | Type |
+| --- | ---: | --- | --- |
+| `header` | 8778 | `cygma-new-header` | Header |
+| `footer` | 8776 | `cygma-new-footer` | Footer |
+| `news-archive` | 8775 | `cygma-new-news-archive` | Archive |
+| `news-tag-page-archive` | 8772 | `cygma-new-news-tag-page-archive` | Archive |
+| `news-featured-item` | 8774 | `cygma-new-news-featured-item` | Loop item |
+| `elementor-loop-item-1568` | 8773 | `cygma-new-elementor-loop-item-1568` | Loop item |
+| `recent-news-cards-loop-template` | 8771 | `cygma-new-recent-news-cards-loop-template` | Loop item |
+| `news-cards-for-homepage` | 8777 | `cygma-new-news-cards-for-homepage` | Loop item |
+| `member-page-detail-template` | 8769 | `cygma-new-member-page-detail-template` | Single post |
+| `members-card-loop-template` | 8770 | `cygma-new-members-card-loop-template` | Loop item |
+| `members-detailed-page-no-image-template` | 8767 | `cygma-new-members-detailed-page-no-image-template` | Page template |
+| `members-detailed-page-with-image-template` | 8768 | `cygma-new-members-detailed-page-with-image-template` | Page template |
+
 ## Validation Notes
 
 - Production `/about/` draft preview renders and exposes the Elementor edit link.
+- Production `home-new` draft preview renders and exposes the Elementor edit link.
 - Public production remains unchanged: homepage returns 200 and `/about-us/` still returns 200.
 - Redirects and `/news/[slug]/` routing remain disabled until target pages are published and QA passes.
 - Staging is now noindex/nofollow through WordPress Reading Settings.
+- Migrated production drafts and draft Elementor templates have zero remaining `cygma.bonafideshops.com` references after domain cleanup.
 
 ## Current Blockers Before Cutover
 
-- Staging home design includes media references to `cygma.bonafideshops.com/wp-content/uploads`; these must be replaced with production media URLs or imported media before publishing the new homepage.
+- The homepage media URL blocker is cleared, but the homepage still contains editorial placeholders and typos such as `Example` and `Mission & Piorities`.
 - Staging About page includes placeholder labels/copy such as `Example` and repeated placeholder headings; editorial cleanup is needed before publishing.
-- Staging News page has almost no Elementor layout data, so the final news archive/single post design still needs Elementor Theme Builder work.
+- Staging News page has almost no page-level Elementor layout data, but relevant Elementor archive and loop templates have now been imported as draft templates for review.
 - Legal pages must be checked against `CYGMA/Docs/` before replacing production pages.
 
 ## Next Recommended Actions
 
 1. Review production draft previews in wp-admin while logged in.
 2. Clean staging placeholder content or edit the production drafts directly in Elementor.
-3. Import or replace homepage media assets so no staging upload URLs remain.
-4. Build the Elementor Theme Builder templates for news archive and single posts using the 9 real production posts.
+3. Review imported draft Elementor templates, then publish/apply conditions only during the approved cutover window.
+4. Test the draft news archive and loop templates against the 9 real production posts.
 5. After content QA, publish target pages, enable maintenance mode, enable redirects/news routing, run final checks, then disable maintenance mode.
