@@ -143,6 +143,9 @@ All templates below were imported as drafts and had original Elementor display c
   - Live route audit found `/memberships/[slug]/` member URLs currently resolve, but `/members/[slug]/` redirects to the homepage before member routing is enabled.
   - Production has 23 published `memberships` items, not 22 as the original planning note expected.
   - Created `docs/cutover-runbook-20260515.md` with exact page/template/menu IDs, routing controls, news/member URL maps, cutover order, QA checks, and rollback steps.
+  - Rebuilt `deploy/cygma-migration-tools.zip` with plugin version 0.2.0 and updated the plugin on staging and production; the new `member_routing` control is visible and all four switches remain unchecked on both sites.
+  - Rebuilt `deploy/cygma-migration-mu-plugins-20260515.tar.gz` with `cygma-member-routing.php` included for cutover-only MU deployment if needed.
+  - Post-update production route check confirmed public behavior remains unchanged while switches are off: `/` 200, `/memberships/gdcy/` 200, `/members/gdcy/` still 301s to `/`, `/news/[slug]/` still 301s to the root post, and the root post remains 200.
 
 ## Remaining Stages
 
