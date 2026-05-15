@@ -122,6 +122,15 @@ All templates below were imported as drafts and had original Elementor display c
   - `privacy-policy-new` 8766 from `CYGMA_Privacy_Policy_23042026.docx`.
 - Legal draft preview recheck confirms all four legal pages return 200, have no missing images, no horizontal overflow, and source-scale word counts.
 - Elementor `Clear Files & Data` was run again after the legal source import and CTA link cleanup.
+- Draft header/template cleanup was applied:
+  - `cygma-new-header` 8778 `Become a Member` container/button now points to `/membership/apply/` in the draft template data.
+  - Published/global menu links are intentionally unchanged; the rendered `How to apply`/`Join CYGMA` menu route still points to `/become-a-member/` until the approved cutover step.
+- Template asset QA found 12 missing upload URLs in imported draft templates, mainly news archive background/pagination assets and header SVGs.
+- Uploaded 6 missing public staging template assets to production media IDs 8910-8915: `News-bg.webp`, `left-arrow.svg`, `right-arrow.svg`, `CYGMA-Logo-mobile.svg`, `Hamburger-closed.svg`, and `hamburger-opened.svg`.
+- Patched imported draft template URLs from missing `/2026/03/` and `/2026/04/` paths to resolving production `/2026/05/` media URLs; `become-member-bg-mob.png` was mapped to the existing production `become-member-bg-mob.webp` because the `.png` source is absent on staging.
+- Re-audit confirms 12 of 12 imported draft template upload URLs now resolve, with zero remaining `/2026/03/` or `/2026/04/` template asset references.
+- Preview smoke test for draft news archive 8775, news tag archive 8772, footer 8776, and header 8778 returns 200 with no broken images or horizontal overflow in the current desktop QA viewport.
+- Elementor `Clear Files & Data` was run again after the template asset patch.
 
 ## Current Blockers Before Cutover
 
@@ -131,7 +140,7 @@ All templates below were imported as drafts and had original Elementor display c
 - News archive draft templates no longer contain staging source term filters or staging loop-template IDs; first-pass preview QA is clean, but final manual QA is still required before enabling news templates/routing.
 - Remaining draft body `#` placeholders are intentionally left for editorial/document decision: `home-new` has `Relocate to Cyprus`; `about` has `By-Laws`.
 - Legal pages now use the local `CYGMA/Docs/` source text, but a final legal/editorial read-through is still required before replacing production pages.
-- Global navigation/header still contains the old `How to apply` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
+- Published/global navigation still contains the old `How to apply`/`Join CYGMA` route to `/become-a-member/`; update this only during the approved page publish/cutover step so the live site is not changed prematurely.
 
 ## Next Recommended Actions
 
