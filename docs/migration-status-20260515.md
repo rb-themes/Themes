@@ -146,6 +146,10 @@ All templates below were imported as drafts and had original Elementor display c
   - Rebuilt `deploy/cygma-migration-tools.zip` with plugin version 0.2.0 and updated the plugin on staging and production; the new `member_routing` control is visible and all four switches remain unchecked on both sites.
   - Rebuilt `deploy/cygma-migration-mu-plugins-20260515.tar.gz` with `cygma-member-routing.php` included for cutover-only MU deployment if needed.
   - Post-update production route check confirmed public behavior remains unchanged while switches are off: `/` 200, `/memberships/gdcy/` 200, `/members/gdcy/` still 301s to `/`, `/news/[slug]/` still 301s to the root post, and the root post remains 200.
+  - Cutover approval stage prepared in `docs/cutover-approval-packet-20260515.md`; no By-Laws/statutes source file was found locally or in production media search.
+  - Draft page audit found 12 stale relative `/2026/04/` CSS asset references in `members-new` 8761; uploaded missing outline SVGs to production media IDs 8925-8928 and patched the draft CSS to resolving `/2026/05/` URLs.
+  - Elementor `Clear Files & Data` was run after the members CSS asset patch.
+  - Recheck confirms the 10 members CSS asset URLs resolve with 200, `members-new` has zero remaining `/2026/04/` references, all 9 draft previews return 200, and rendered draft previews show no broken images, staging references, old upload refs, or desktop horizontal overflow.
 
 ## Remaining Stages
 
